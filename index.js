@@ -13,10 +13,10 @@ ______________________________________________________*/
 try {
   const EXPRESS = require('express');
 } catch(e) {
-  console.log('');
+  console.log('---------------------------------------------------------');
   console.log('You most likely still need to run the command "npm update"');
-  console.log('or execute the "Update_SLbot.bat" file in the project root folder');
-  console.log('');
+  console.log('or execute "Update_SLbot.bat" in the project root folder');
+  console.log('---------------------------------------------------------');
   return;
 }
 EXPRESS = require('express');
@@ -27,7 +27,6 @@ const API = require('./api/db_api.js');
 const BOT = require('./bot.js');
 const CONFIG = require('./config.json');
 const LOGGER = require('./logger.js');
-
 //----------------------------------
 APP.use(BODYPARSER.urlencoded({ extended: true }));
 APP.use(BODYPARSER.json({limit:CONFIG.web.jsonsizelimit}));
@@ -58,38 +57,33 @@ APP.get('/about', (request, response) => {
     name: CONFIG.web.name
   });
 });
-
 //API for web call
 APP.post('/api/web/fetch', (request, response) => {
   LOGGER.log('/api/web/fetch', i);
   response.json(API.getFullStats()); //send them the data they need
 });
-
 //API for servers query
 APP.post('/api/servers', (request, response) => {
   LOGGER.log('/api/servers', i);
   response.json(API.getServers()); //send them the data they need
 });
-
 //API for hours query
 APP.post('/api/hours', (request, response) => {
   LOGGER.log('/api/hours', i);
-  response.json(API.getHours(request.body)); //send them the data they need
+  console.log(request.body);
+  response.json(API.getHours(sanitizeCmd(request.body.command))); //send them the data they need
 });
-
 //API for kills query
 APP.post('/api/kills', (request, response) => {
   LOGGER.log('/api/kills', i);
-  response.json(API.getKills(request.body)); //send them the data they need
+  response.json(API.getKills(sanitizeCmd(request.body.command))); //send them the data they need
 });
-
 //API for deaths query
 APP.post('/api/deaths', (request, response) => {
   LOGGER.log('/api/deaths', i);
-  response.json(API.getDeaths(request.body)); //send them the data they need
+  response.json(API.getDeaths(sanitizeCmd(request.body.command))); //send them the data they need
 });
-
-//API for SLSC Server
+//API for SLSC Servers
 //update the database with new info
 APP.post('/api/dcs/slmod/update', (request, response) => {
   LOGGER.log('/api/dcs/slmod/update from '+req.body.name, i);
@@ -104,3 +98,19 @@ APP.post('/api/dcs/slmod/update', (request, response) => {
 APP.listen(CONFIG.web.port || 4000, function() {
   LOGGER.log('SLbot Server listening on port ' + CONFIG.web.port, t);
 });
+
+/*
+  sanitizeCmd
+  sanitizes and formats the raw string command from the user
+_________________________________________________________________*/
+function sanitizeCmd(input) {
+  input = input.split(' ');
+  //sanitize the array
+  for (var i in input) {
+    input[i] = input[i].toLowerCase().replace(/[^\w\s]/gi, '');
+  }
+  return {
+    'command': input[0],
+    'args': input.slice(1) //array slice the command off the args list
+  };
+}
