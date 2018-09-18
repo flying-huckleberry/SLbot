@@ -213,7 +213,7 @@ function authorizeToken(id, token) {
 _________________________________________________________________*/
 function floatingPtHours(val) {
   //return (Math.round((100*val/3600))/100); //floating pt hours
-  return parseFloat(val/3600).toFixed(2);
+  return (parseFloat(val)/3600).toFixed(2);
 }
 /*
   calcHours
@@ -259,8 +259,14 @@ function addHours(list, aList) {
           //same type, add inAir and Total hours
           if (type in list[name]) {
             //console.log(name+' has type '+type+', adding to ['+name+']['+type+']');
-            list[name][type]['inAir'] += aList[name][type]['inAir'];
-            list[name][type]['total'] += aList[name][type]['total'];
+            list[name][type]['inAir'] = (
+              parseFloat(list[name][type]['inAir']) +
+              parseFloat(aList[name][type]['inAir'])
+            ).toFixed(2);
+            list[name][type]['total'] = (
+              parseFloat(list[name][type]['total']) +
+              parseFloat(aList[name][type]['total'])
+            ).toFixed(2);
           } else {
             //console.log('list['+name+'] doesnt have type '+type+', adding whole ['+type+']');
             list[name][type] = aList[name][type];
