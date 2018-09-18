@@ -1,0 +1,33 @@
+{
+  "hours": {
+    "!hours command": "Queries the Stats DB for a user's logged hours",
+    "Syntax": "`!hours` `<name>` `<airframe>` `<server id>` (optional)",
+    "Variable Notes": "Get valid `<server id>` from the `!servers` command"
+  },
+  "kills": {
+    "!kills command": "Queries the Stats DB for a user's logged kills",
+    "Syntax": "`!kills` `<name>` `<type>` `<server id>` (optional)",
+    "Variable Notes": "`<type>` can be any of the following:\n[ `pvp`, `ground`, `heli`, `planes`, `ships`, `buildings` ]\nGet valid `<server id>` from the `!servers` command"
+  },
+  "deaths": {
+    "!deaths command": "Queries the Stats DB for a user's logged deaths",
+    "Syntax": "`!deaths` `<name>` `<server id>` (optional)",
+    "Variable Notes": "Get valid `<server id>` from the `!servers` command"
+  },
+  "servers": {
+    "!servers command": "Lists all the servers that are tracked by this app as `id`: name",
+    "Syntax": "`!servers`"
+  },
+  "stats": {
+    "!stats command": "Provides a link to the web view of the SLbot stats server",
+    "Syntax": "`!stats`"
+  },
+  "commands": {
+    "!commands command": "Lists all the help messages for all the SLbot API commands",
+    "Syntax": "`!commands`"
+  },
+  "help": {
+    "!help command": "Lists all the help messages for all the SLbot API commands",
+    "Syntax": "`!help`"
+  }
+}

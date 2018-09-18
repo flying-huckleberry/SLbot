@@ -1,5 +1,6 @@
 npm-debug.log
 /node_modules
 /api/db/*
-bot-config.json
 tokens.json
+config.json
+api-commands.json
