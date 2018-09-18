@@ -127,7 +127,6 @@ APP.post('/api/servers', (request, response) => {
 //API for hours query
 APP.post('/api/hours', (request, response) => {
   LOGGER.log('/api/hours', i);
-  console.log(request.body);
   response.json(API.getHours(sanitizeCmd(request.body.command))); //send them the data they need
 });
 //API for kills query
