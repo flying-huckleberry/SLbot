@@ -40,7 +40,11 @@ APP.set('view engine', 'ejs');
 const e = 'error';
 const i = 'info';
 const t = 'task';
-//----------------------------------
+
+//---------------------
+// WEB calls
+//---------------------
+
 //serve index page
 APP.get('/', (request, response) => {
     response.render('html/index', {
@@ -50,6 +54,54 @@ APP.get('/', (request, response) => {
         treeView: CONFIG.web.treeview
     });
 });
+//serve API fetch page
+APP.get('/api/web/fetch', (request, response) => {
+  response.render('html/api/fetch', {
+    title: 'SLbot API: /api/web/fetch',
+    name: CONFIG.web.name,
+    logo: CONFIG.web.logo
+  });
+});
+//server API servers page
+APP.get('/api/servers', (request, response) => {
+  response.render('html/api/servers', {
+    title: 'SLbot API: /api/servers',
+    name: CONFIG.web.name,
+    logo: CONFIG.web.logo
+  });
+});
+//serve API hours page
+APP.get('/api/hours', (request, response) => {
+  response.render('html/api/hours', {
+    title: 'SLbot API: /api/hours',
+    name: CONFIG.web.name,
+    logo: CONFIG.web.logo
+  });
+});
+//serve API kills page
+APP.get('/api/kills', (request, response) => {
+  response.render('html/api/kills', {
+    title: 'SLbot API: /api/kills',
+    name: CONFIG.web.name,
+    logo: CONFIG.web.logo
+  });
+});
+//serve API deaths page
+APP.get('/api/deaths', (request, response) => {
+  response.render('html/api/deaths', {
+    title: 'SLbot API: /api/deaths',
+    name: CONFIG.web.name,
+    logo: CONFIG.web.logo
+  });
+});
+//server API update page
+APP.get('/api/dcs/slmod/update', (request, response) => {
+  response.render('html/api/update', {
+    title: 'SLbot API: /api/dcs/slmod/update',
+    name: CONFIG.web.name,
+    logo: CONFIG.web.logo
+  });
+});
 //serve about page
 APP.get('/about', (request, response) => {
   response.render('html/about', {
@@ -57,6 +109,11 @@ APP.get('/about', (request, response) => {
     name: CONFIG.web.name
   });
 });
+
+//---------------------
+// API calls
+//---------------------
+
 //API for web call
 APP.post('/api/web/fetch', (request, response) => {
   LOGGER.log('/api/web/fetch', i);
