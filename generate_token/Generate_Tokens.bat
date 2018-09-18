@@ -1,0 +1,2 @@
+node token.js
+pause

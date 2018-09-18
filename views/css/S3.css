@@ -1,0 +1,90 @@
+body { color:#333; }
+main {font-family: 'Slabo 27px', serif;}
+.btn {font-family:'Open Sans', sans-serif}
+.larger {font-size: 1.5em;}
+.clear {clear:both;}
+.table-links a:hover {cursor: pointer;}
+.well h2 {text-align:center;margin-top:0;}
+.server-name {font-family: 'Boogaloo', sans-serif; font-size:2.5em;color:#333;}
+.tree-view {margin-top: 70px;}
+.loading-text { font-family: 'Open Sans', sans-serif; }
+.center {text-align:center}
+.navbar-brand { padding: 11px 15px; }
+#loading-icon {
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius:4px;
+}
+#json-tree { padding-left:20px; }
+.datatable {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 1em;
+}
+.blackops {
+  font-family: 'Black Ops One', cursive;
+  font-size: 2em;
+  float: none;
+}
+#servers {
+  margin: 0 auto;
+  max-width: 800px;
+}
+#logo {
+  width: 90%;
+  text-align: center;
+}
+.server-list-row {
+  text-align: center;
+  border-bottom: 1px solid black;
+  padding: 10px;
+  font-size:1.3em;
+}
+.server-list-row:nth-child(odd) {
+  background: #eee;
+}
+.server-list-row-header {
+  text-align: center;
+  padding: 5px;
+  font-size: 1.5em;
+  border-bottom: 1px solid black;
+  background: #ccc;
+  border-top-right-radius: 6px;
+  border-top-left-radius: 6px;
+}
+
+
+.loading-divs {
+  border-left: 4px solid #df3912;
+  border-right: 4px solid #fec124;
+  display: inline-block;
+  border-radius: 100%;
+  -webkit-animation: Move 4s linear infinite;
+  -moz-animation: Move 4s linear infinite;
+  -ms-animation: Move 4s linear infinite;
+  -o-animation: Move 4s linear infinite;
+  animation: Move 4s linear infinite;
+  z-index: 2;
+}
+
+
+
+@-webkit-keyframes Move{
+  0%{-webkit-transform:rotate(90deg);}
+  100%{-webkit-transform:rotate(-90deg);}
+}
+@-moz-keyframes Move{
+  0%{-moz-transform:rotate(90deg);}
+  100%{-moz-transform:rotate(-90deg);}
+}
+@-ms-keyframes Move{
+  0%{-ms-transform:rotate(90deg);}
+  100%{-ms-transform:rotate(-90deg);}
+}
+@-o-keyframes Move{
+  0%{-o-transform:rotate(90deg);}
+  100%{-o-transform:rotate(-90deg);}
+}
+@keyframes Move{
+  0%{transform:rotate(90deg);}
+  100%{transform:rotate(-90deg);}
+}

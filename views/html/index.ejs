@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include ../partials/head %>
+</head>
+<body class="container">
+
+    <header>
+        <% include ../partials/header %>
+    </header>
+
+    <main>
+
+      <% include ../partials/S3 %>
+
+      <div id="dt-container">
+        <table class="table datatable" id="datatable"></table>
+      </div>
+
+      <hr class="clear" />
+
+      <%if (treeView) { %>
+	    <% include ../partials/json %>
+      <% } %>
+      
+
+    </main>
+
+    <footer>
+        <% include ../partials/footer %>
+    </footer>
+
+    <% include ../partials/scripts %>
+</body>
+</html>

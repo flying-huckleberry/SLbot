@@ -1,0 +1,28 @@
+{
+  "name": "SLbot",
+  "version": "1.0.0",
+  "description": "DCS SLmod Database API, Discord Bot, Web Server",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "Huckleberry",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "bufferutil": "^3.0.3",
+    "discord.js": "^11.4.2",
+    "ejs": "^2.6.1",
+    "express": "^4.16.3",
+    "jquery.json-viewer": "^1.1.0",
+    "libsodium-wrappers": "^0.7.3",
+    "node-json-db": "^0.7.5",
+    "npm-install-peers": "^1.2.1",
+    "opusscript": "0.0.6",
+    "process": "^0.11.9",
+    "request": "^2.88.0",
+    "uws": "^9.14.0",
+    "xmlhttprequest": "^1.8.0"
+  }
+}

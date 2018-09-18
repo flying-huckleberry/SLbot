@@ -1,0 +1,20 @@
+{
+  "web": {
+    "name": "229th Flight Log",
+    "description": "Web view for 229th server statistics",
+    "url": "http://webdev.science:229/",
+    "logo": "patch.png",
+    "tag": "229) ",
+    "treeview": true,
+    "jsonsizelimit": "20mb",
+    "port": 4000,
+    "database": "db",
+    "backupdatabase": "db_backup"
+  },
+  "bot": {
+    "prefix": "!",
+    "color": "0x707070",
+    "helpcolor": "0xF8B91D",
+    "helpdescription": "This is a discord bot that lets you query the DCS World SLmod game statistics databases which are being tracked by this instance of SLbot. You can issue it the following commands, and it can also notify you when a DCS database sends an update."
+  }
+}

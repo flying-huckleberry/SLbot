@@ -1,0 +1,20 @@
+{
+  "SLSC": {
+    "server-1": "server-1 secret token",
+    "second-server": "second-server secret token",
+    "229th-server": "229th-server secret token"
+  },
+  "discord": {
+    "token": "discord app/bot secret token https://discordapp.com/developers/applications"
+  },
+  "webhooks": {
+    "hook1": {
+      "id": "000000000000000000",
+      "token": "discord webhook secret token"
+    },
+    "hook2": {
+      "id": "000000000000000000",
+      "token": "discord webhook secret token"
+    }
+  }
+}

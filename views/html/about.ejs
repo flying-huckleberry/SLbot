@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include ../partials/head %>
+</head>
+<body class="container">
+
+    <header>
+        <% include ../partials/header %>
+    </header>
+
+    <main>
+
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+          <div class="jumbotron  jumbotron-fluid">
+            <h1 class="blackops larger">TL;DR</h1>
+            <ol class="lead">
+              <li><span style="font-weight:bold">SLmod</span> generates DCS player statistics,</li>
+              <li><span style="font-weight:bold">SLSC</span> checks for new statistics every so often & uploads to</li>
+              <li><span style="font-weight:bold">S3</span>, where you can view it online.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <div class="row">
+                <div class="col-md-8"><div class="container"></div><div class="row"></div>
+                     <h4><strong><a href="#">S3</a></strong></h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-xs-6">
+                <img src="https://i58.servimg.com/u/f58/19/53/72/50/close_10.jpg" alt="" class="img-responsive">
+                </div>
+                <div class="col-md-8">
+                  <p>SLmod Statistics Server (S3) is a JSON Database API and frontend web interface that utilizes players' in-game statistics, saved via Speed's Lua Mod (SLmod).</p>
+                  <p><a class="btn btn-primary" href="https://github.com/Bango1999/S3">S3 on GitHub</a>
+                  </p>
+                </div>
+            </div>
+        </div>
+      </div>
+      <hr>
+
+
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <div class="row">
+                <div class="col-md-8"><div class="container"></div><div class="row"></div>
+                     <h4><strong><a href="#">SLSC</a></strong></h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-xs-6">
+                <img src="https://i58.servimg.com/u/f58/19/53/72/50/stagge11.jpg" alt="" class="img-responsive">
+
+                </div>
+                <div class="col-md-8">
+                    <p>S3 is not the only service that needs to be run for a fully-functioning system.</p>
+                    <p>Multiple DCS game servers can upload their statistical data to S3 via an API.  Each DCS game server you host which runs SLmod will also be required to run a small node.js cron service alongside it, called Slmod Statistics Crontask (SLSC)</p>
+                    <p>
+                      <a class="btn btn-primary" href="https://github.com/Bango1999/SLSC">SLSC on Github</a>&nbsp;&nbsp;<a class="btn btn-primary" href="https://github.com/mrSkortch/DCS-SLmod/tree/develop">SLmod on Github</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+      </div>
+      <hr>
+
+      <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <div class="row">
+                <div class="col-md-8"><div class="container"></div><div class="row"></div>
+                     <h4><strong><a href="#">Open Source Licensing</a></strong></h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-xs-6">
+                <img src="https://i58.servimg.com/u/f58/19/53/72/50/hucks_11.jpg" alt="" class="img-responsive">
+
+                </div>
+                <div class="col-md-8">
+                    <p>You are free to use, edit, and distribute the code under the standards of the MIT license.</p>
+                    <p>Originally created by (A/229) Huckleberry, DCS 1stCav Div</p>
+                    <p>Happy Flying!</p>
+                    <p>
+                      <a class="btn btn-primary" href="https://opensource.org/licenses/MIT">MIT License</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+      </div>
+      <hr>
+
+    </main>
+
+    <footer>
+        <% include ../partials/footer %>
+    </footer>
+
+</body>
+</html>
