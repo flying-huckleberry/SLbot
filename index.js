@@ -14,10 +14,8 @@ try {
   const EXPRESS = require('express');
 } catch(e) {
   console.log('');
-  console.log('Slow down there, Slick! You most likely still need to run the command "npm update"');
-  console.log('( or execute the "Update_SLbot.bat" file in the project root folder )');
-  console.log('');
-  console.log('Otherwise, the real issue is that I cannot successfully "require(\'express\')" at the top of index.js');
+  console.log('You most likely still need to run the command "npm update"');
+  console.log('or execute the "Update_SLbot.bat" file in the project root folder');
   console.log('');
   return;
 }
