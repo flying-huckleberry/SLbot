@@ -3,5 +3,4 @@ npm-debug.log
 /api/db/*
 tokens.json
 config.json
-api-commands.json
 TODO
