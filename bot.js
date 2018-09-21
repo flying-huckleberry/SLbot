@@ -63,7 +63,10 @@ BOT.on('message', msg => {
     _________________________________________________________________*/
     //if the current command is in the commands list above
     if (Object.keys(APICOMMANDS).includes(CMD.command)) {
-      sendCommandReply(msg, createAPIEmbed(CMD), msg.content);
+      sendCommandReply(
+        msg,
+        createAPIEmbed(CMD),
+        'Discord API command: '+msg.content);
     }
     /*
       !hook
@@ -71,7 +74,7 @@ BOT.on('message', msg => {
     if (CMD.command === 'hook') {
       for (var i in WEBHOOKS) {
         WEBHOOKS[i].send('229th Bot sends its regards.')
-          .then(message => LOGGER.log(msg.content, i))
+          .then(message => LOGGER.log('Discord command: '+msg.content, i))
           .catch(console.error);
       }
     }
@@ -81,7 +84,7 @@ BOT.on('message', msg => {
     if (CMD.command === 'doabarrelroll') {
       //sendCommandReply(msg, '*barrel rolls*', '*barrel rolls*');
       msg.channel.send('*barrel rolls*')
-        .then(message => LOGGER.log(msg.content))
+        .then(message => LOGGER.log('Discord command: '+msg.content, i))
         .catch(console.error);
         //msg.reply('*barrel rolls*')
     }
@@ -95,7 +98,7 @@ BOT.on('message', msg => {
         .setColor(0xCF0000)
         .setDescription('I flit, I float, I fleetly flee, I fly')
         .setImage('https://thumbs.gfycat.com/FlippantUniformAustraliankestrel-small.gif');
-      sendCommandReply(msg, embed, msg.content);
+      sendCommandReply(msg, embed, 'Discord command: '+msg.content);
     }
 
     /*
@@ -103,25 +106,42 @@ BOT.on('message', msg => {
       returns RichEmbed , add your own commands
       https://discord.js.org/#/docs/main/stable/class/RichEmbed
     _________________________________________________________________*/
-    if (CMD.command === 'avatar') {
+    if (CMD.command === 'pic') {
       let user = msg.mentions.users.first();
       let embed;
       if (!user) {
         embed = new DISCORD.RichEmbed()
           .setTitle('ERROR')
           .setColor(CONFIG.bot.helpcolor)
-          .setDescription("Syntax: `"+CONFIG.bot.prefix+"avatar` `<@username>`");
+          .setDescription("Syntax: `"+CONFIG.bot.prefix+"pic` `<@username>`");
       } else {
         //configure the embed
         embed = new DISCORD.RichEmbed()
-          .setTitle('Avatar')
-          .setColor(CONFIG.bot.color)
-          .setImage(user.avatarURL)
-          .setURL(user.avatarURL);
+        .setColor(CONFIG.bot.color)
+        .setAuthor(user.username,user.avatarURL)
+        .setTitle('Open original')
+        .setURL(user.avatarURL)
+        .setImage(user.avatarURL);
       }
-
       //send it to the discord channel
-      sendCommandReply(msg, embed, msg.content);
+      sendCommandReply(msg, embed, 'Discord command: '+msg.content);
+    }
+
+    /*
+      mycommand
+      returns RichEmbed , add your own commands
+      https://discord.js.org/#/docs/main/stable/class/RichEmbed
+    _________________________________________________________________*/
+    if (CMD.command === 'serverpic') {
+      let embed = new DISCORD.RichEmbed()
+          .setColor(CONFIG.bot.color)
+          .setAuthor(msg.guild.name, msg.guild.iconURL)
+          .setTitle('Open original')
+          .setURL(msg.guild.iconURL)
+          .setImage(msg.guild.iconURL)
+          .setFooter(CONFIG.web.url);
+      //send it to the discord channel
+      sendCommandReply(msg, embed, 'Discord command: '+msg.content);
     }
 
     // /*
@@ -175,7 +195,7 @@ function sanitizeCmd(input) {
   input = input.split(' ');
   //sanitize the array
   for (var i in input) {
-    input[i] = input[i].toLowerCase().replace(/[^\w\s]/gi, '');
+    input[i] = input[i].toLowerCase().replace(/[^\w]/gi, '');
   }
   return {
     'command': input[0],
@@ -449,17 +469,17 @@ function getDiscordList() {
   when a node sends a stats update, send to the appr. channels
 _________________________________________________________________*/
 function announceUpdate(name) {
-  let message = 'New update from '+name;
   let embed = new DISCORD.RichEmbed()
     .setTitle('Database Refreshed')
     .setColor(CONFIG.bot.color)
-    .setDescription(message)
+    .setDescription('New update from '+name)
     .setThumbnail(CONFIG.web.logo)
     .setFooter(CONFIG.web.url);
   for (var guild of BOT.guilds.values()) {
     for (var channel of guild.channels.values()) {
       if (channel.name == CONFIG.bot.defaultchannel) {
-        sendToChannel(channel.id, embed, message);
+        sendToChannel(channel.id, embed,
+          'SLbot notifies '+channel.name+' in '+guild.name+' of an update by '+name);
       }
     }
   }

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include ../partials/head %>
+</head>
+<body class="container">
+
+    <header>
+        <% include ../partials/header %>
+    </header>
+
+    <main>
+
+      <div class="container" style="font-size:15pt;">
+        <dl class="dl-horizontal">
+          <dt><code>/api/fetch</code></dt>
+          <dd>type: <span class="badge badge-primary">POST</span> | input: none | response: <span class="badge badge-primary">JSON</span></dd>
+          <dt><code>/api/servers</code></dt>
+          <dd>type: <span class="badge badge-primary">POST</span> | input: none | response: <span class="badge badge-primary">JSON</span></dd>
+          <dt><code>/api/hours</code></dt>
+          <dd>type: <span class="badge badge-primary">POST</span> | input: <span class="badge badge-primary">JSON</span> <code>{ "command": STRING }</code> | response: <span class="badge badge-primary">JSON</span></dd>
+          <dt><code>/api/kills</code></dt>
+          <dd>type: <span class="badge badge-primary">POST</span> | input: <span class="badge badge-primary">JSON</span> <code>{ "command": STRING }</code> | response: <span class="badge badge-primary">JSON</span></dd>
+          <dt><code>/api/deaths</code></dt>
+          <dd>type: <span class="badge badge-primary">POST</span> | input: <span class="badge badge-primary">JSON</span> <code>{ "command": STRING }</code> | response: <span class="badge badge-primary">JSON</span></dd>
+        </dl>
+        <p>All queries return JSON</p>
+      </div>
+
+
+    </main>
+
+    <footer>
+        <% include ../partials/footer %>
+    </footer>
+
+    <% include ../partials/scripts %>
+</body>
+</html>

@@ -14,7 +14,7 @@ $(document).ready(function() {
   //ajax request to get data to populate tables with
   //fire immediately on doc ready
   $.ajax({
-    url: "/api/web/fetch",
+    url: "/api/fetch",
     type: "POST",
     dataType: "json",
     data: {},

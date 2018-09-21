@@ -11,7 +11,7 @@
 
     <main>
 
-      <% include ../partials/S3 %>
+      <% include ../partials/table-selector %>
 
       <div id="dt-container">
         <table class="table datatable" id="datatable"></table>
@@ -22,7 +22,7 @@
       <%if (treeView) { %>
 	    <% include ../partials/json %>
       <% } %>
-      
+
 
     </main>
 
@@ -31,5 +31,6 @@
     </footer>
 
     <% include ../partials/scripts %>
+    <script src="js/table-functions.js"></script>
 </body>
 </html>

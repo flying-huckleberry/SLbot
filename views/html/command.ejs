@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include ../partials/head %>
+</head>
+<body class="container">
+
+    <header>
+        <% include ../partials/header %>
+    </header>
+
+    <main>
+
+      <div class="container">
+        <h2>Command Builder</h2>
+        <ul>
+          <li><code>!servers</code></li>
+          <li><code>!hours [name] [aircraft] [server]</code></li>
+          <li><code>!kills [name] [object type] [server]</code></li>
+          <li><code>!deaths [name] [server]</code></li>
+        </ul>
+        <hr>
+        <form>
+          <div class="form-group">
+            <div class="col-md-2">
+            <label for="cmd">Command:</label>
+            <select name="cmd" id="cmd" class="form-control">
+              <option value="choice">-</option>
+              <option value="servers">!servers</option>
+              <option value="hours">!hours</option>
+              <option value="kills">!kills</option>
+              <option value="deaths">!deaths</option>
+            </select>
+            </div>
+            <div class="col-md-3">
+              <label for="arg1">Argument 1:</label>
+              <input name="arg1" id="arg1" class="form-control">
+            </div>
+            <div class="col-md-3">
+              <label for="arg2">Argument 2:</label>
+              <input name="arg2" id="arg2" class="form-control">
+            </div>
+            <div class="col-md-3">
+              <label for="arg3">Argument 3:</label>
+              <input name="arg3" id="arg3" class="form-control">
+            </div>
+            <div class="col-md-1">
+              <label for="run" style="visibility:hidden">Run</label>
+              <button id="run" type="submit" class="btn btn-primary">Run</button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div id="json-tree" class="well" style="visibility:hidden;margin-top:20px"></div>
+
+    </main>
+
+    <footer>
+        <% include ../partials/footer %>
+    </footer>
+
+    <% include ../partials/scripts %>
+    <script src="js/command-functions.js"></script>
+</body>
+</html>

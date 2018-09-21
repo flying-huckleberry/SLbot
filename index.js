@@ -47,63 +47,35 @@ const t = 'task';
 
 //serve index page
 APP.get('/', (request, response) => {
-    response.render('html/index', {
-        title: CONFIG.web.name,
-        name: CONFIG.web.name,
-        logo: CONFIG.web.logo,
-        treeView: CONFIG.web.treeview
-    });
+  LOGGER.log('GET  /index', i);
+  response.render('html/index', {
+      title: CONFIG.web.name,
+      name: CONFIG.web.name,
+      logo: CONFIG.web.logo,
+      treeView: CONFIG.web.treeview
+  });
 });
 //serve API fetch page
-APP.get('/api/web/fetch', (request, response) => {
-  response.render('html/api/fetch', {
-    title: 'SLbot API: /api/web/fetch',
+APP.get('/command', (request, response) => {
+  LOGGER.log('GET  /command', i);
+  response.render('html/command', {
+    title: 'SLbot Command Interpreter',
     name: CONFIG.web.name,
     logo: CONFIG.web.logo
   });
 });
-//server API servers page
-APP.get('/api/servers', (request, response) => {
-  response.render('html/api/servers', {
-    title: 'SLbot API: /api/servers',
-    name: CONFIG.web.name,
-    logo: CONFIG.web.logo
-  });
-});
-//serve API hours page
-APP.get('/api/hours', (request, response) => {
-  response.render('html/api/hours', {
-    title: 'SLbot API: /api/hours',
-    name: CONFIG.web.name,
-    logo: CONFIG.web.logo
-  });
-});
-//serve API kills page
-APP.get('/api/kills', (request, response) => {
-  response.render('html/api/kills', {
-    title: 'SLbot API: /api/kills',
-    name: CONFIG.web.name,
-    logo: CONFIG.web.logo
-  });
-});
-//serve API deaths page
-APP.get('/api/deaths', (request, response) => {
-  response.render('html/api/deaths', {
-    title: 'SLbot API: /api/deaths',
-    name: CONFIG.web.name,
-    logo: CONFIG.web.logo
-  });
-});
-//server API update page
-APP.get('/api/dcs/slmod/update', (request, response) => {
-  response.render('html/api/update', {
-    title: 'SLbot API: /api/dcs/slmod/update',
+//server API index
+APP.get('/api', (request, response) => {
+  LOGGER.log('GET  /api', i);
+  response.render('html/api', {
+    title: 'SLbot API Overview',
     name: CONFIG.web.name,
     logo: CONFIG.web.logo
   });
 });
 //serve about page
 APP.get('/about', (request, response) => {
+  LOGGER.log('GET  /about', i);
   response.render('html/about', {
     title: 'SLbot Info',
     name: CONFIG.web.name
@@ -115,35 +87,34 @@ APP.get('/about', (request, response) => {
 //---------------------
 
 //API for web call
-APP.post('/api/web/fetch', (request, response) => {
-  LOGGER.log('/api/web/fetch', i);
+APP.post('/api/fetch', (request, response) => {
+  LOGGER.log('POST /api/fetch', i);
   response.json(API.getFullStats()); //send them the data they need
-  BOT.announceUpdate('dummy');
 });
 //API for servers query
 APP.post('/api/servers', (request, response) => {
-  LOGGER.log('/api/servers', i);
+  LOGGER.log('POST /api/servers', i);
   response.json(API.getServers()); //send them the data they need
 });
 //API for hours query
 APP.post('/api/hours', (request, response) => {
-  LOGGER.log('/api/hours', i);
+  LOGGER.log('POST /api/hours', i);
   response.json(API.getHours(sanitizeCmd(request.body.command))); //send them the data they need
 });
 //API for kills query
 APP.post('/api/kills', (request, response) => {
-  LOGGER.log('/api/kills', i);
+  LOGGER.log('POST /api/kills', i);
   response.json(API.getKills(sanitizeCmd(request.body.command))); //send them the data they need
 });
 //API for deaths query
 APP.post('/api/deaths', (request, response) => {
-  LOGGER.log('/api/deaths', i);
+  LOGGER.log('POST /api/deaths', i);
   response.json(API.getDeaths(sanitizeCmd(request.body.command))); //send them the data they need
 });
 //API for SLSC Servers
 //update the database with new info
 APP.post('/api/dcs/slmod/update', (request, response) => {
-  LOGGER.log('/api/dcs/slmod/update from '+request.body.name, i);
+  LOGGER.log('POST /api/dcs/slmod/update from '+request.body.name, i);
   var error = API.update(request.body); //update the stats and server info
   if (error) {
     response.end('fail');

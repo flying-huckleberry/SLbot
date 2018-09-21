@@ -84,12 +84,12 @@ function cleanTypes() {
   for (var idx = 0; idx < AIRTYPES.length; idx++) {
     cleanAirTypes[idx] = AIRTYPES[idx]
                       .toLowerCase()
-                      .replace(/[^\w\s\ ]/gi, '');
+                      .replace(/[^\w]/gi, '');
   }
   for (var idx = 0; idx < KILLTYPES.length; idx++) {
     cleanKillTypes[idx] = KILLTYPES[idx]
                       .toLowerCase()
-                      .replace(/[^\w\s\ ]/gi, '');
+                      .replace(/[^\w]/gi, '');
   }
 }
 cleanTypes(); //do it now
@@ -117,7 +117,7 @@ function matchNames(needle, haystack) {
   //find name
   let nameMatches = {};
   for (var k in haystack) {
-    if (sanitize(haystack[k]['name']).includes(needle)) {
+    if (sanitize(haystack[k]['name'].replace(/[^\w]/gi, '')).includes(needle)) {
       //console.log(`found ${needle} in ${haystack[k]['name']}`);
       nameMatches[k] = haystack[k]['name'];
     }
@@ -459,7 +459,7 @@ function singleHours(CMD, server = false) {
     return calcHours(serverdb[server], nameMatches, typeMatches);
     //---------------------------------------------
   } else {
-    return apiErr("Server ID `"+(server)+"` is invalid, should be one of these:\n{ `"+Object.keys(serverdb).join('`, `')+"` }");
+    return apiErr("Server ID `"+(server||'undefined')+"` is invalid, should be one of these:\n{ `"+Object.keys(serverdb).join('`, `')+"` }");
   }
   return apiErr('generic hours api error');
 }
@@ -482,7 +482,7 @@ function singleKills(CMD, server = false) {
     }
     let typeMatches = matchKillTypes(CMD.args[1]);
     if (Object.keys(typeMatches).length == 0) {
-      return apiErr("Cannot find kill type matching `"+CMD.args[1]+"` in\n{ `"+cleanKillTypes.join('`, `')+"` }");
+      return apiErr("Cannot find object type matching `"+CMD.args[1]+"` in\n{ `"+cleanKillTypes.join('`, `')+"` }");
     }
     //server, name, type are clean. lets do the thing!
     //send the server json, the whitelisted names and whitelisted types
@@ -490,7 +490,7 @@ function singleKills(CMD, server = false) {
     return calcKills(serverdb[server], nameMatches, typeMatches);
     //---------------------------------------------
   } else {
-    return apiErr("Server ID `"+server||'undefined'+"` is invalid, should be one of these:\n{ `"+Object.keys(serverdb).join('`, `')+"` }");
+    return apiErr("Server ID `"+(server||'undefined')+"` is invalid, should be one of these:\n{ `"+Object.keys(serverdb).join('`, `')+"` }");
   }
   return apiErr('generic kills api error');
 }
@@ -517,7 +517,7 @@ function singleDeaths(CMD, server = false) {
     return calcDeaths(serverdb[server], nameMatches);
     //---------------------------------------------
   } else {
-    return apiErr("Server ID `"+server+"` is invalid, should be one of these:\n{ `"+Object.keys(serverdb).join('`, `')+"` }");
+    return apiErr("Server ID `"+(server||'undefined')+"` is invalid, should be one of these:\n{ `"+Object.keys(serverdb).join('`, `')+"` }");
   }
   return apiErr('generic deaths api error');
 }
