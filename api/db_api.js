@@ -27,10 +27,10 @@ const DB = 'api/db/' + CONFIG.web.database;
 const BDB = 'api/db/' + CONFIG.web.backupdatabase;
 
 //array of possible aircraft type matches
-const types = [
+const AIRTYPES = [
   'UH-1H',
-  'ah-64d',
-  'CobraH',
+//  'ah-64d', //in slmod stats but not in game
+//  'CobraH', //in slmod stats but not in game
   'Ka-50',
   'Mi-8MT',
   'SA342L',
@@ -40,7 +40,7 @@ const types = [
   'F-5E-3',
   'F-86F Sabre',
   'P-51D',
-  'IL-76MD',
+//  'IL-76MD', //in slmod stats but not in game
   'MiG-15bis',
   'MiG-21Bis',
   'MiG-29A',
@@ -56,12 +56,13 @@ const types = [
   'M-2000C',
   'SpitfireLFMkIX'
 ];
-var cleantypes = [];
+const KILLTYPES = [ 'PvP', 'Ground Units', 'Helicopters', 'Planes', 'Ships', 'Buildings' ];
+var cleanAirTypes = [];
+var cleanKillTypes = [];
 
 //-------------------------------------
 // HELPER FUNCTIONS
 //-------------------------------------
-
 
 /*
   refreshNameLoopupTable
@@ -77,13 +78,18 @@ _________________________________________________________________*/
 
 /*
   cleanTypes
-  sanitize types array defined above
+  sanitize TYPE arrays defined above
 _________________________________________________________________*/
 function cleanTypes() {
-  for (var idx = 0; idx < types.length; idx++) {
-    cleantypes[idx] = types[idx]
+  for (var idx = 0; idx < AIRTYPES.length; idx++) {
+    cleanAirTypes[idx] = AIRTYPES[idx]
                       .toLowerCase()
-                      .replace(/[^\w\s]/gi, '');
+                      .replace(/[^\w\s\ ]/gi, '');
+  }
+  for (var idx = 0; idx < KILLTYPES.length; idx++) {
+    cleanKillTypes[idx] = KILLTYPES[idx]
+                      .toLowerCase()
+                      .replace(/[^\w\s\ ]/gi, '');
   }
 }
 cleanTypes(); //do it now
@@ -93,7 +99,7 @@ cleanTypes(); //do it now
 _________________________________________________________________*/
 function updateTokens() {
   var db = new jsondb(DB, true, true);
-  db.push('/token',TOKENS);
+  db.push('/token',TOKENS['SLSC']);
 }
 updateTokens(); //do it now
 /*
@@ -101,13 +107,12 @@ updateTokens(); //do it now
   update tokens in the db with whats in the config
 _________________________________________________________________*/
 function sanitize(data) {
-  return data.toLowerCase().replace(/[^\w\s]/gi, '');
+  return data.toLowerCase().replace(/[^\w\s\ ]/gi, '');
 }
 /*
-  updateTokens
-  update tokens in the db with whats in the config
+  matchNames
+  return all player id:name's that match the partial name
 _________________________________________________________________*/
-//helper function matchNames to partial
 function matchNames(needle, haystack) {
   //find name
   let nameMatches = {};
@@ -120,20 +125,43 @@ function matchNames(needle, haystack) {
   return nameMatches;
 }
 /*
-  updateTokens
-  update tokens in the db with whats in the config
+  matchAirTypes
+  return all aircraft types that match the partial name
 _________________________________________________________________*/
-//helper function matchTypes to partial
-function matchTypes(needle) {
+function matchAirTypes(needle) {
   //build list of types matching the partial typep
   let typeMatches = [];
-  for (var k in cleantypes) {
-    if (cleantypes[k].includes(needle)) {
-      //console.log('found '+needle+' in '+cleantypes[k]);
-      typeMatches.push(types[k]);
+  for (var k in cleanAirTypes) {
+    if (cleanAirTypes[k].includes(needle)) {
+      //console.log('found '+needle+' in '+cleanAircraftypes[k]);
+      typeMatches.push(AIRTYPES[k]);
     }
   }
   return typeMatches;
+}
+/*
+  matchKillTypes
+  update tokens in the db with whats in the config
+_________________________________________________________________*/
+function matchKillTypes(needle) {
+  //build list of types matching the partial typep
+  let typeMatches = [];
+  for (var k in cleanKillTypes) {
+    if (cleanKillTypes[k].includes(needle)) {
+      //console.log('found '+needle+' in '+cleanKillTypes[k]);
+      typeMatches.push(KILLTYPES[k]);
+    }
+  }
+  return typeMatches;
+}
+/*
+  apiErr
+  Log to logger and return an error message for SLbot & discord
+_________________________________________________________________*/
+function apiErr(mg, err = false) {
+  //LOGGER.log(mg,i);
+  if (err) { LOGGER.log(err,e) }
+  return {'ERROR':mg };
 }
 /*
   updateTokens
@@ -243,6 +271,46 @@ function calcHours(db, nameMatches, typeMatches) {
   return output;
 }
 /*
+  calcKills
+  grab all the relevant kill values and put them in the output
+_________________________________________________________________*/
+function calcKills(db, nameMatches, typeMatches) {
+  let output = {};
+  let nal = Object.keys(nameMatches).length;
+  let tyl = Object.keys(typeMatches).length;
+  //set an output array with just name:{times}
+  for (var spid in nameMatches) {
+    if (db['stats'][spid]['kills'] !== null) {
+      output[nameMatches[spid]] = db['stats'][spid]['kills'];
+      for (var type in output[nameMatches[spid]]) {
+        if (!typeMatches.includes(type)){
+          delete output[nameMatches[spid]][type];
+        }
+      }
+    }
+  }
+  return output;
+}
+/*
+  calcDeaths
+  grab all the relevant death values and put them in the output
+_________________________________________________________________*/
+function calcDeaths(db, nameMatches) {
+  //losses and PvP => losses
+  let output = {};
+  let nal = Object.keys(nameMatches).length;
+  //set an output array with just name:{times}
+  for (var spid in nameMatches) {
+    if (db['stats'][spid]['losses'] !== null) {
+      output[nameMatches[spid]] = db['stats'][spid]['losses'];
+      if (db['stats'][spid]['PvP']['losses'] !== null) {
+        output[nameMatches[spid]]['PvP'] = db['stats'][spid]['PvP']['losses'];
+      }
+    }
+  }
+  return output;
+}
+/*
   addHours
   adds 1 hours array to another if the request is for all servers
 _________________________________________________________________*/
@@ -278,7 +346,89 @@ function addHours(list, aList) {
 
     } //new user here not in og list, add if not empty
     else if (aList[name] != {}) { list[name] = aList[name] }
-    else {console.log('skipping empty set for '+name)}
+    //else {console.log('skipping empty set for '+name)}
+  }
+  return list;
+}
+/*
+  addKills
+  adds 1 kills array to another if the request is for all servers
+_________________________________________________________________*/
+function addKills(list, aList) {
+  //console.log(list);
+  //console.log(aList);
+  for (var name in aList) {
+    //console.log(' ? includes '+name);
+    //same name in both lists, concat
+    if (Object.keys(list).includes(name)) {
+      //console.log('yes, has name '+name+', adding to ['+name+']');
+      if (!aList[name] || aList[name] == {}) {
+        //console.log('name not in aList, do nothing to '+list[name]);
+      } else {
+        //console.log('here');
+        for (var type in aList[name]) {
+          //same type, add fields together
+          if (type in list[name]) {
+            //console.log('same field in both concat, '+type);
+            //console.log(name+' has type '+type+', adding to ['+name+']['+type+']');
+            for (var kt in list[name][type]) {
+              list[name][type][kt] = list[name][type][kt] +aList[name][type][kt];
+            }
+
+          //new type, add it as-is
+          } else {
+            //console.log('list['+name+'] doesnt have type '+type+', adding whole ['+type+']');
+            list[name][type] = aList[name][type];
+          }
+        }
+      }
+    } //new user here not in og list, add if not empty
+    else if (aList[name] != {}) { list[name] = aList[name] }
+  }
+  //console.log(list);
+  return list;
+}
+/*
+  addDeaths
+  adds 1 deaths array to another if the request is for all servers
+_________________________________________________________________*/
+function addDeaths(list, aList) {
+  for (var name in aList) {
+    //console.log(' ? includes '+name);
+    //same name in both lists, concat
+    if (Object.keys(list).includes(name)) {
+      //console.log('yes, has name '+name+', adding to ['+name+']');
+      if (!aList[name] || aList[name] == {}) {
+        //console.log('field empty, disregard this addition');
+      } else {
+        for (var type in aList[name]) {
+          if (typeof aList[name][type] == 'object') {
+
+            for (var idx in aList[name][type]) {
+              if (!aList[name][type][idx] || aList[name][type][idx] == {}) {
+                //console.log('field empty, disregard this addition');
+              } else if (type in list[name]) {
+                if (idx in list[name][type]) {
+                  list[name][type][idx] += aList[name][type][idx];
+                } else {
+                  list[name][type][idx] = aList[name][type][idx];
+                }
+              }
+            }
+          } else {
+            //console.log("adding "+list[name][type]+' to '+aList[name][type]);
+            if (type in list[name]) {
+              list[name][type] += aList[name][type];
+            } else {
+              list[name][type] = aList[name][type];
+            }
+          }
+        }
+      }
+    } //new user here not in og list, add if not empty
+    else if (aList[name] != {}) {
+      list[name] = aList[name];
+    }
   }
   return list;
 }
@@ -290,40 +440,86 @@ function singleHours(CMD, server = false) {
   let fdb = new jsondb(DB, true, true);
   try { var serverdb = fdb.getData('/server') }
   catch(err) {
-    return LOGGER.log('API request for data, but no data is available.',i);
+    return apiErr('API request for hours data, but no data is available.', err);
   }
   server = CMD.args[2] || server; //we'd rather use server id defined in CMD
   if (server in serverdb) {
     let nameMatches = matchNames(CMD.args[0], serverdb[server]['stats']);
     //if no names matching that pattern
     if (Object.keys(nameMatches).length == 0) {
-      return LOGGER.log('Cannot find name matching `'+CMD.args[0]+'` in `'+server+'`', i);
+      return apiErr('Cannot find name matching `'+CMD.args[0]+'` in `'+server+'`');
     }
-    let typeMatches = matchTypes(CMD.args[1]);
+    let typeMatches = matchAirTypes(CMD.args[1]);
     if (Object.keys(typeMatches).length == 0) {
-      return LOGGER.log("Cannot find aircraft type matching `"+CMD.args[1]+"` in\n{ `"+cleantypes.join('`, `')+"` }", i);
+      return apiErr("Cannot find aircraft type matching `"+CMD.args[1]+'`');
     }
     //server, name, type are clean. lets do the thing!
     //send the server json, the whitelisted names and whitelisted types
+    //---------------------------------------------
     return calcHours(serverdb[server], nameMatches, typeMatches);
+    //---------------------------------------------
   } else {
-    return LOGGER.log("Server ID `"+server||'undefined'+"` is invalid, should be one of these:\n{ `"+Object.keys(serverdb).join('`, `')+"` }",i);
+    return apiErr("Server ID `"+(server)+"` is invalid, should be one of these:\n{ `"+Object.keys(serverdb).join('`, `')+"` }");
   }
-  return LOGGER.log('generic error', e);
+  return apiErr('generic hours api error');
 }
 /*
   singleKills
   returns a kills object for a single server
 _________________________________________________________________*/
 function singleKills(CMD, server = false) {
-
+  let fdb = new jsondb(DB, true, true);
+  try { var serverdb = fdb.getData('/server') }
+  catch(err) {
+    return apiErr('API request for kills data, but no data is available.',err);
+  }
+  server = CMD.args[2] || server; //we'd rather use server id defined in CMD
+  if (server in serverdb) {
+    let nameMatches = matchNames(CMD.args[0], serverdb[server]['stats']);
+    //if no names matching that pattern
+    if (Object.keys(nameMatches).length == 0) {
+      return apiErr('Cannot find name matching `'+CMD.args[0]+'` in `'+server+'`');
+    }
+    let typeMatches = matchKillTypes(CMD.args[1]);
+    if (Object.keys(typeMatches).length == 0) {
+      return apiErr("Cannot find kill type matching `"+CMD.args[1]+"` in\n{ `"+cleanKillTypes.join('`, `')+"` }");
+    }
+    //server, name, type are clean. lets do the thing!
+    //send the server json, the whitelisted names and whitelisted types
+    //---------------------------------------------
+    return calcKills(serverdb[server], nameMatches, typeMatches);
+    //---------------------------------------------
+  } else {
+    return apiErr("Server ID `"+server||'undefined'+"` is invalid, should be one of these:\n{ `"+Object.keys(serverdb).join('`, `')+"` }");
+  }
+  return apiErr('generic kills api error');
 }
 /*
   singleDeaths
   returns a deaths object for a single server
 _________________________________________________________________*/
 function singleDeaths(CMD, server = false) {
-
+  let fdb = new jsondb(DB, true, true);
+  try { var serverdb = fdb.getData('/server') }
+  catch(err) {
+    return apiErr('API request for deaths data, but no data is available.',err);
+  }
+  server = CMD.args[1] || server; //we'd rather use server id defined in CMD
+  if (server in serverdb) {
+    let nameMatches = matchNames(CMD.args[0], serverdb[server]['stats']);
+    //if no names matching that pattern
+    if (Object.keys(nameMatches).length == 0) {
+      return apiErr('Cannot find name matching `'+CMD.args[0]+'` in `'+server+'`');
+    }
+    //server, name, type are clean. lets do the thing!
+    //send the server json, the whitelisted names and whitelisted types
+    //--------------------------------------------
+    return calcDeaths(serverdb[server], nameMatches);
+    //---------------------------------------------
+  } else {
+    return apiErr("Server ID `"+server+"` is invalid, should be one of these:\n{ `"+Object.keys(serverdb).join('`, `')+"` }");
+  }
+  return apiErr('generic deaths api error');
 }
 
 //-------------------------------------
@@ -399,6 +595,8 @@ function getHours(CMD) {
     return LOGGER.log('API request for data, but no data is available.',i);
   }
   //console.log(`finding ${CMD.args[2]} recorded ${CMD.command} for ${CMD.args[0]} in type ${CMD.args[1]}`);
+
+  //if not aircraft param
   if (!CMD.args[2]) {
     let list = {};
     let first = true;
@@ -406,10 +604,14 @@ function getHours(CMD) {
       //if first, define the first list
       if (first) {
         list = singleHours(CMD, serverKey);
+        if (Object.keys(list).includes('ERROR')) {return list}
+        //console.log('single hours, list =');
+        //console.log(list);
         first = false;
       //if not first, add with first
       } else {
         let addingList = singleHours(CMD, serverKey);
+        if (Object.keys(list).includes('ERROR')) {return list}
         list = addHours(list, addingList);
       }
     }
@@ -417,37 +619,77 @@ function getHours(CMD) {
   } else {
     return singleHours(CMD);
   }
-  return {'ERROR': 'generic'};
+  return {'ERROR': 'generic hours command error'};
 }
 /*
   getKills
   returns kill statistics as JSON
 _________________________________________________________________*/
-function getKills(input) {
-  var fdb = new jsondb(DB, true, true);
+function getKills(CMD) {
+  let fdb = new jsondb(DB, true, true);
   try { var json = fdb.getData('/server') }
   catch(err) {
-    LOGGER.log('ERROR: Trying to send data to web client, but no data is available.',i);
-    LOGGER.log('(Have you started recieving SLmod Stats data yet from any SLSC servers?)',i);
-    LOGGER.log('Technical info: Either the DB "'+ DB + '.json" does not exist, or there is no ["server"] index within it',i);
-    return false; //return empty object
+    return LOGGER.log('API request for data, but no data is available.',i);
   }
-  return trimToServerList(json);
+  //console.log(`finding ${CMD.args[2]} recorded ${CMD.command} for ${CMD.args[0]} in type ${CMD.args[1]}`);
+
+  //if not kill type param
+  if (!CMD.args[2]) {
+    let list = {};
+    let first = true;
+    for (var serverKey in json) {
+      //if first, define the first list
+      if (first) {
+        list = singleKills(CMD, serverKey);
+        if (Object.keys(list).includes('ERROR')) {return list}
+        first = false;
+      //if not first, add with first
+      } else {
+        let addingList = singleKills(CMD, serverKey);
+        if (Object.keys(list).includes('ERROR')) {return list}
+        list = addKills(list, addingList);
+      }
+    }
+    return list;
+  } else {
+    return singleKills(CMD);
+  }
+  return {'ERROR': 'generic kills command error'};
 }
 /*
   getDeaths
   returns death statistics as JSON
 _________________________________________________________________*/
-function getDeaths(input) {
-  var fdb = new jsondb(DB, true, true);
+function getDeaths(CMD) {
+  let fdb = new jsondb(DB, true, true);
   try { var json = fdb.getData('/server') }
   catch(err) {
-    LOGGER.log('ERROR: Trying to send data to web client, but no data is available.',i);
-    LOGGER.log('(Have you started recieving SLmod Stats data yet from any SLSC servers?)',i);
-    LOGGER.log('Technical info: Either the DB "'+ DB + '.json" does not exist, or there is no ["server"] index within it',i);
-    return false; //return empty object
+    return LOGGER.log('API request for data, but no data is available.',i);
   }
-  return trimToServerList(json);
+  //console.log(`finding ${CMD.args[2]} recorded ${CMD.command} for ${CMD.args[0]} in type ${CMD.args[1]}`);
+
+  //if not server param
+  if (!CMD.args[1]) {
+    let list = {};
+    let first = true;
+    for (var serverKey in json) {
+      //if first, define the first list
+      if (first) {
+        list = singleDeaths(CMD, serverKey);
+        if (Object.keys(list).includes('ERROR')) {return list}
+        first = false;
+      //if not first, add with first
+      } else {
+        let addingList = singleDeaths(CMD, serverKey);
+        if (Object.keys(list).includes('ERROR')) {return list}
+        list = addDeaths(list, addingList);
+      }
+    }
+    return list;
+  } else {
+    return singleDeaths(CMD);
+  }
+  return {'ERROR': 'generic deaths command error'};
 }
 //--------------------------------
 module.exports = {

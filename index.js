@@ -118,6 +118,7 @@ APP.get('/about', (request, response) => {
 APP.post('/api/web/fetch', (request, response) => {
   LOGGER.log('/api/web/fetch', i);
   response.json(API.getFullStats()); //send them the data they need
+  BOT.announceUpdate('dummy');
 });
 //API for servers query
 APP.post('/api/servers', (request, response) => {
@@ -142,17 +143,20 @@ APP.post('/api/deaths', (request, response) => {
 //API for SLSC Servers
 //update the database with new info
 APP.post('/api/dcs/slmod/update', (request, response) => {
-  LOGGER.log('/api/dcs/slmod/update from '+req.body.name, i);
+  LOGGER.log('/api/dcs/slmod/update from '+request.body.name, i);
   var error = API.update(request.body); //update the stats and server info
   if (error) {
-    LOGGER.log(error, e);
     response.end('fail');
-  } else { res.end('pass') }
+    LOGGER.log(error, e);
+  } else {
+    response.end('pass');
+    if (CONFIG.bot.sendupdatemessages) { BOT.announceUpdate(request.body.name) }
+  }
 });
 
 //serve app
 APP.listen(CONFIG.web.port || 4000, function() {
-  LOGGER.log('SLbot Server listening on port ' + CONFIG.web.port, t);
+  LOGGER.log('SLbot awakens on port ' + CONFIG.web.port, t);
 });
 
 /*

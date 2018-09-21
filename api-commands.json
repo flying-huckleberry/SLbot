@@ -7,7 +7,7 @@
   "kills": {
     "!kills command": "Queries the Stats DB for a user's logged kills",
     "Syntax": "`!kills` `<name>` `<type>` `<server id>` (optional)",
-    "Variable Notes": "`<type>` can be any of the following:\n[ `pvp`, `ground`, `heli`, `planes`, `ships`, `buildings` ]\nGet valid `<server id>` from the `!servers` command"
+    "Variable Notes": "`<type>` can be any of the following:\n{ `pvp`, `ground`, `heli`, `planes`, `ships`, `buildings` }\nGet valid `<server id>` from the `!servers` command"
   },
   "deaths": {
     "!deaths command": "Queries the Stats DB for a user's logged deaths",
