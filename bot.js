@@ -66,7 +66,7 @@ BOT.on('message', msg => {
       sendCommandReply(
         msg,
         createAPIEmbed(CMD),
-        'Discord API command: '+msg.content);
+        commandInfo(msg));
     }
     /*
       !hook
@@ -74,7 +74,7 @@ BOT.on('message', msg => {
     if (CMD.command === 'hook') {
       for (var i in WEBHOOKS) {
         WEBHOOKS[i].send('229th Bot sends its regards.')
-          .then(message => LOGGER.log('Discord command: '+msg.content, i))
+          .then(message => LOGGER.log(commandInfo(msg), i))
           .catch(console.error);
       }
     }
@@ -84,7 +84,7 @@ BOT.on('message', msg => {
     if (CMD.command === 'doabarrelroll') {
       //sendCommandReply(msg, '*barrel rolls*', '*barrel rolls*');
       msg.channel.send('*barrel rolls*')
-        .then(message => LOGGER.log('Discord command: '+msg.content, i))
+        .then(message => LOGGER.log(commandInfo(msg), i))
         .catch(console.error);
         //msg.reply('*barrel rolls*')
     }
@@ -98,7 +98,7 @@ BOT.on('message', msg => {
         .setColor(0xCF0000)
         .setDescription('I flit, I float, I fleetly flee, I fly')
         .setImage('https://thumbs.gfycat.com/FlippantUniformAustraliankestrel-small.gif');
-      sendCommandReply(msg, embed, 'Discord command: '+msg.content);
+      sendCommandReply(msg, embed, commandInfo(msg));
     }
 
     /*
@@ -124,7 +124,7 @@ BOT.on('message', msg => {
         .setImage(user.avatarURL);
       }
       //send it to the discord channel
-      sendCommandReply(msg, embed, 'Discord command: '+msg.content);
+      sendCommandReply(msg, embed, commandInfo(msg));
     }
 
     /*
@@ -141,7 +141,7 @@ BOT.on('message', msg => {
           .setImage(msg.guild.iconURL)
           .setFooter(CONFIG.web.url);
       //send it to the discord channel
-      sendCommandReply(msg, embed, 'Discord command: '+msg.content);
+      sendCommandReply(msg, embed, commandInfo(msg));
     }
 
     // /*
@@ -465,6 +465,13 @@ function getDiscordList() {
   return list;
 }
 /*
+  commandInfo
+  returns a string formatted for the log about the command info
+_________________________________________________________________*/
+function commandInfo(msg) {
+  return msg.author.username+' sends command "'+msg.content+'" to '+msg.guild.name+' channel #'+msg.channel.name;
+}
+/*
   announceUpdate
   when a node sends a stats update, send to the appr. channels
 _________________________________________________________________*/
@@ -479,7 +486,7 @@ function announceUpdate(name) {
     for (var channel of guild.channels.values()) {
       if (channel.name == CONFIG.bot.defaultchannel) {
         sendToChannel(channel.id, embed,
-          'SLbot notifies '+channel.name+' in '+guild.name+' of an update by '+name);
+          'SLbot announces in '+guild.name+' channel #'+channel.name+' of an update from '+name);
       }
     }
   }

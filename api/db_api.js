@@ -532,23 +532,21 @@ function singleDeaths(CMD, server = false) {
 _________________________________________________________________*/
 function update(json) {
   var serverId = authorizeToken(json['id'], json['token']);
-  if (serverId === false) {
-    return 'Invalid Token, Aborting DB Update';
-  } else { LOGGER.log('Token validated, server ID: ' + serverId, i) }
-  LOGGER.log('Performing DB update and backup...',i);
-        //The second argument is used to tell the DB to save after each push
-        //If you put false, you'll have to call the save() method.
-        //The third argument is to ask JsonDB to save the database in an human readable format. (default false)
+  if (serverId === false) { return 'Invalid Token, Aborting DB Update' }
+  else { LOGGER.log('Token is valid for ID: ' + serverId, i) }
+  //The second argument is used to tell the DB to save after each push
+  //If you put false, you'll have to call the save() method.
+  //The third argument is to ask JsonDB to save the database in an human readable format. (default false)
   var db = new jsondb(DB, true, true);
   var backupdb = new jsondb(BDB, true, true);
   try { var prevjson = db.getData('/') }
   catch(err) { return 'ERROR: Either the DB "'+ DB + '.json" does not exist, or there is no-thing "{}" within it' }
   backupdb.push('/', prevjson);
-  LOGGER.log('Updated Backup DB',i);
+  LOGGER.log('Backup Database updates successfully',i);
   json = integerIncrementNameHashes(json); //TODO dont do this step
   json = setDisplayNames(json);
   db.push('/server/'+json['id'], json);
-  LOGGER.log('Updated Main DB',i);
+  LOGGER.log('Main Database updates successfully',i);
       //https://github.com/Belphemur/node-json-db
       //Deleting data
       //db.delete("/info");
