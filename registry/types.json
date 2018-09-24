@@ -1,0 +1,36 @@
+{
+  "hours": [
+    "UH-1H",
+    "Ka-50",
+    "Mi-8MT",
+    "SA342L",
+    "SA342M",
+    "A-10C",
+    "F-15C",
+    "F-5E-3",
+    "F-86F Sabre",
+    "P-51D",
+    "MiG-15bis",
+    "MiG-21Bis",
+    "MiG-29A",
+    "MiG-29S",
+    "Su-25",
+    "Su-25T",
+    "Su-27",
+    "AJS37",
+    "Bf-109K-4",
+    "FW-190D9",
+    "L-39C",
+    "L-39ZA",
+    "M-2000C",
+    "SpitfireLFMkIX"
+  ],
+  "kills": [
+    "PvP",
+    "Ground Units",
+    "Helicopters",
+    "Planes",
+    "Ships",
+    "Buildings"
+  ]
+}

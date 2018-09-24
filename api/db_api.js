@@ -12,6 +12,7 @@ ______________________________________________________*/
 const jsondb = require('node-json-db');
 
 const CONFIG = require('../config.json');
+const TYPES = require('../registry/types.json');
 const TOKENS = require('../tokens.json');
 const LOGGER = require('../logger.js');
 
@@ -26,37 +27,6 @@ const ERROR = 'ERROR';
 const DB = 'api/db/' + CONFIG.web.database;
 const BDB = 'api/db/' + CONFIG.web.backupdatabase;
 
-//array of possible aircraft type matches
-const AIRTYPES = [
-  'UH-1H',
-//  'ah-64d', //in slmod stats but not in game
-//  'CobraH', //in slmod stats but not in game
-  'Ka-50',
-  'Mi-8MT',
-  'SA342L',
-  'SA342M',
-  'A-10C',
-  'F-15C',
-  'F-5E-3',
-  'F-86F Sabre',
-  'P-51D',
-//  'IL-76MD', //in slmod stats but not in game
-  'MiG-15bis',
-  'MiG-21Bis',
-  'MiG-29A',
-  'MiG-29S',
-  'Su-25',
-  'Su-25T',
-  'Su-27',
-  'AJS37',
-  'Bf-109K-4',
-  'FW-190D9',
-  'L-39C',
-  'L-39ZA',
-  'M-2000C',
-  'SpitfireLFMkIX'
-];
-const KILLTYPES = [ 'PvP', 'Ground Units', 'Helicopters', 'Planes', 'Ships', 'Buildings' ];
 var cleanAirTypes = [];
 var cleanKillTypes = [];
 
@@ -81,13 +51,13 @@ _________________________________________________________________*/
   sanitize TYPE arrays defined above
 _________________________________________________________________*/
 function cleanTypes() {
-  for (var idx = 0; idx < AIRTYPES.length; idx++) {
-    cleanAirTypes[idx] = AIRTYPES[idx]
+  for (var idx = 0; idx < TYPES.hours.length; idx++) {
+    cleanAirTypes[idx] = TYPES.hours[idx]
                       .toLowerCase()
                       .replace(/[^\w]/gi, '');
   }
-  for (var idx = 0; idx < KILLTYPES.length; idx++) {
-    cleanKillTypes[idx] = KILLTYPES[idx]
+  for (var idx = 0; idx < TYPES.kills.length; idx++) {
+    cleanKillTypes[idx] = TYPES.kills[idx]
                       .toLowerCase()
                       .replace(/[^\w]/gi, '');
   }
@@ -134,7 +104,7 @@ function matchAirTypes(needle) {
   for (var k in cleanAirTypes) {
     if (cleanAirTypes[k].includes(needle)) {
       //console.log('found '+needle+' in '+cleanAircraftypes[k]);
-      typeMatches.push(AIRTYPES[k]);
+      typeMatches.push(TYPES.hours[k]);
     }
   }
   return typeMatches;
@@ -149,7 +119,7 @@ function matchKillTypes(needle) {
   for (var k in cleanKillTypes) {
     if (cleanKillTypes[k].includes(needle)) {
       //console.log('found '+needle+' in '+cleanKillTypes[k]);
-      typeMatches.push(KILLTYPES[k]);
+      typeMatches.push(TYPES.kills[k]);
     }
   }
   return typeMatches;
@@ -689,6 +659,13 @@ function getDeaths(CMD) {
   }
   return {'ERROR': 'generic deaths command error'};
 }
+/*
+  getTypes
+  returns types for building the web command form
+_________________________________________________________________*/
+function getTypes() {
+  return TYPES;
+}
 //--------------------------------
 module.exports = {
   update: function(json) { return update(json) },
@@ -696,5 +673,6 @@ module.exports = {
   getServers: function() { return getServers() },
   getHours: function(input) { return getHours(input) },
   getKills: function(input) { return getKills(input) },
-  getDeaths: function(input) { return getDeaths(input) }
+  getDeaths: function(input) { return getDeaths(input) },
+  getTypes: function() { return getTypes() }
 };

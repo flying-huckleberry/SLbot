@@ -26,6 +26,7 @@ const APP = EXPRESS();
 const API = require('./api/db_api.js');
 const BOT = require('./bot.js');
 const CONFIG = require('./config.json');
+const TYPES = require('./registry/types.json');
 const LOGGER = require('./logger.js');
 //----------------------------------
 APP.use(BODYPARSER.urlencoded({ extended: true }));
@@ -61,7 +62,8 @@ APP.get('/command', (request, response) => {
   response.render('html/command', {
     title: 'SLbot Command Interpreter',
     name: CONFIG.web.name,
-    logo: CONFIG.web.logo
+    logo: CONFIG.web.logo,
+    prefix: CONFIG.bot.prefix
   });
 });
 //server API index
@@ -98,18 +100,23 @@ APP.post('/api/servers', (request, response) => {
 });
 //API for hours query
 APP.post('/api/hours', (request, response) => {
-  LOGGER.log('POST /api/hours '+request.body.command, i);
+  LOGGER.log('POST /api/hours "'+request.body.command+'"', i);
   response.json(API.getHours(sanitizeCmd(request.body.command))); //send them the data they need
 });
 //API for kills query
 APP.post('/api/kills', (request, response) => {
-  LOGGER.log('POST /api/kills '+request.body.command, i);
+  LOGGER.log('POST /api/kills "'+request.body.command+'"', i);
   response.json(API.getKills(sanitizeCmd(request.body.command))); //send them the data they need
 });
 //API for deaths query
 APP.post('/api/deaths', (request, response) => {
-  LOGGER.log('POST /api/deaths '+request.body.command, i);
+  LOGGER.log('POST /api/deaths "'+request.body.command+'"', i);
   response.json(API.getDeaths(sanitizeCmd(request.body.command))); //send them the data they need
+});
+//API for types list
+APP.post('/api/types', (request, response) => {
+  //LOGGER.log('POST /api/types "'+request.body.command+'"', i);
+  response.json(API.getTypes()); //send them the data they need
 });
 //API for SLSC Servers
 //update the database with new info

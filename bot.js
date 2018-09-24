@@ -14,7 +14,7 @@ const BOT = new DISCORD.Client();
 const COOLDOWNS = new DISCORD.Collection();
 const LOGGER = require('./logger.js');
 const API = require('./api/db_api.js');
-const APICOMMANDS = require('./api-commands.json');
+const APICOMMANDS = require('./registry/api-commands.json');
 const CONFIG = require('./config.json');
 const TOKENS = require('./tokens.json');
 // var WEBHOOKS = {};
@@ -31,7 +31,7 @@ var lastUpdate = new Date();
 
 //bot is logged into discord
 BOT.on('ready', () => {
-  LOGGER.log(`${BOT.user.tag} logs into Discord`,t);
+  LOGGER.log(`${BOT.user.tag} connects to Discord`,t);
   LOGGER.log('Guilds: '+getDiscordList().join(', '),i);
   BOT.user.setStatus('online');
   BOT.user.setActivity(
@@ -66,12 +66,12 @@ BOT.on('message', msg => {
     const now = Date.now();
     //timestamps is clear of this author, but not anymore!
     if (!timestamps.has(msg.author.id)) {
-        console.log('adding '+msg.author.id+' to timestamps');
+        //console.log('adding '+msg.author.id+' to timestamps');
         //add it to timestamps
         timestamps.set(msg.author.id, now);
         //remove it from list after a few seconds
         setTimeout(() => function() {
-          console.log('removing '+msg.author.id+' from timestamps');
+          //console.log('removing '+msg.author.id+' from timestamps');
           timestamps.delete(msg.author.id)
         }, cooldownAmount);
     }
