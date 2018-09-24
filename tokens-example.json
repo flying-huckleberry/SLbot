@@ -6,15 +6,5 @@
   },
   "discord": {
     "token": "discord app/bot secret token https://discordjs.guide/#/preparations/setting-up-a-bot-application"
-  },
-  "webhooks": {
-    "hook1": {
-      "id": "000000000000000000",
-      "token": "discord webhook secret token"
-    },
-    "hook2": {
-      "id": "000000000000000000",
-      "token": "discord webhook secret token"
-    }
   }
 }

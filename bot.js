@@ -11,15 +11,16 @@
 ______________________________________________________*/
 const DISCORD = require('discord.js');
 const BOT = new DISCORD.Client();
+const COOLDOWNS = new DISCORD.Collection();
 const LOGGER = require('./logger.js');
 const API = require('./api/db_api.js');
 const APICOMMANDS = require('./api-commands.json');
 const CONFIG = require('./config.json');
 const TOKENS = require('./tokens.json');
-var WEBHOOKS = {};
-for (let key in TOKENS.webhooks) {
-  WEBHOOKS[key] = new DISCORD.WebhookClient(TOKENS.webhooks[key]['token']);
-}
+// var WEBHOOKS = {};
+// for (let key in TOKENS.webhooks) {
+//   WEBHOOKS[key] = new DISCORD.WebhookClient(TOKENS.webhooks[key]['token']);
+// }
 
 //vars for easy logging
 const e = 'error';
@@ -57,9 +58,35 @@ BOT.on('message', msg => {
     //-------------------------------------
     const CMD = sanitizeCmd(msg.content);
 
+    if (!COOLDOWNS.has(CMD.command)) {
+        COOLDOWNS.set(CMD.command, new DISCORD.Collection());
+    }
+    const timestamps = COOLDOWNS.get(CMD.command);
+    const cooldownAmount = 4000; //4 seconds
+    const now = Date.now();
+    //timestamps is clear of this author, but not anymore!
+    if (!timestamps.has(msg.author.id)) {
+        console.log('adding '+msg.author.id+' to timestamps');
+        //add it to timestamps
+        timestamps.set(msg.author.id, now);
+        //remove it from list after a few seconds
+        setTimeout(() => function() {
+          console.log('removing '+msg.author.id+' from timestamps');
+          timestamps.delete(msg.author.id)
+        }, cooldownAmount);
+    }
+    else {
+      const expirationTime = timestamps.get(msg.author.id) + cooldownAmount;
+      if (now < expirationTime) {
+          return msg.reply(`please wait ${((expirationTime - now) / 1000).toFixed(1)} more second(s) before reusing the \`${CMD.command}\` command.`);
+      }
+      timestamps.set(msg.author.id, now);
+      setTimeout(() => timestamps.delete(msg.author.id), cooldownAmount);
+    }
+
     /*
       API COMMANDS
-      servers, stats, commands, help, hours, kills, deaths
+      hours, kills, deaths, servers, stats, commands, help
     _________________________________________________________________*/
     //if the current command is in the commands list above
     if (Object.keys(APICOMMANDS).includes(CMD.command)) {
@@ -67,16 +94,6 @@ BOT.on('message', msg => {
         msg,
         createAPIEmbed(CMD),
         commandInfo(msg));
-    }
-    /*
-      !hook
-    _________________________________________________________________*/
-    if (CMD.command === 'hook') {
-      for (var i in WEBHOOKS) {
-        WEBHOOKS[i].send('229th Bot sends its regards.')
-          .then(message => LOGGER.log(commandInfo(msg), i))
-          .catch(console.error);
-      }
     }
     /*
       !doabarrelroll
@@ -192,7 +209,7 @@ function hkdAPI(CMD) {
   sanitizes and formats the raw string command from the user
 _________________________________________________________________*/
 function sanitizeCmd(input) {
-  input = input.split(' ');
+  input = input.split(/\s+/);
   //sanitize the array
   for (var i in input) {
     input[i] = input[i].toLowerCase().replace(/[^\w]/gi, '');

@@ -12,9 +12,9 @@ $(document).ready(function() {
       $("label[for='arg3']").text('N/A:');
       $("#arg3").prop('disabled', true);
     } else if (this.value == 'hours') {
-      $("label[for='arg1']").text('Name:')
+      $("label[for='arg1']").text('Name:');
       $("#arg1").prop('disabled', false);
-      $("label[for='arg2']").text('Aircraft:')
+      $("label[for='arg2']").text('Aircraft:');
       $("#arg2").prop('disabled', false);
       $("label[for='arg3']").text('Server (optional):');
       $("#arg3").prop('disabled', false);
@@ -41,10 +41,10 @@ $(document).ready(function() {
           && $('#cmd').val() !== 'hours'
           && $('#cmd').val() !== 'kills'
           && $('#cmd').val() !== 'deaths') {
-            console.log("ERROR: Please Choose a Command.");
-            return false;
-          }
-    let command = $('#cmd option:selected').text();
+      console.log("ERROR: Please Choose a Command.");
+      return false;
+    }
+    var command = $('#cmd option:selected').text();
     if ($('#arg1').val()) { command += (' '+$('#arg1').val()); }
     if ($('#arg2').val()) { command += (' '+$('#arg2').val()); }
     if ($('#arg3').val()) { command += (' '+$('#arg3').val()); }
@@ -63,7 +63,7 @@ $(document).ready(function() {
         $('#json-tree').css({'visibility':'visible'});
 
       }, //end success
-      error: function(err) { console.log(err) }
+      error: function(err) { console.log(err); }
     }); //end ajax call
   });
 

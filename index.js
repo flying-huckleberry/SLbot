@@ -98,17 +98,17 @@ APP.post('/api/servers', (request, response) => {
 });
 //API for hours query
 APP.post('/api/hours', (request, response) => {
-  LOGGER.log('POST /api/hours', i);
+  LOGGER.log('POST /api/hours '+request.body.command, i);
   response.json(API.getHours(sanitizeCmd(request.body.command))); //send them the data they need
 });
 //API for kills query
 APP.post('/api/kills', (request, response) => {
-  LOGGER.log('POST /api/kills', i);
+  LOGGER.log('POST /api/kills '+request.body.command, i);
   response.json(API.getKills(sanitizeCmd(request.body.command))); //send them the data they need
 });
 //API for deaths query
 APP.post('/api/deaths', (request, response) => {
-  LOGGER.log('POST /api/deaths', i);
+  LOGGER.log('POST /api/deaths '+request.body.command, i);
   response.json(API.getDeaths(sanitizeCmd(request.body.command))); //send them the data they need
 });
 //API for SLSC Servers
