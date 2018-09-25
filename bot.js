@@ -349,6 +349,7 @@ function hkdCommandEmbed(CMD) {
             .addField('ERROR', 'Command must be `hours`, `kills`, or `deaths`');
   }
   let discordStr = discordStringifyObject(fields);
+  //LOGGER.log(JSON.stringify(fields, null, 4),i);
   //immutable values for embed
   let embed = new DISCORD.RichEmbed()
     .setTitle(`${CMD.command.toUpperCase()} Statistic Reporter`)
@@ -389,9 +390,9 @@ function unknownCommandEmbed(CMD) {
 _________________________________________________________________*/
 function discordStringifyObject(input, output = "", level = 0) {
   if (level == 0 && Object.keys(input).includes('ERROR')) {
-    return '**ERROR**: '+input['ERROR'];
+    return '**ERROR**: '+input['ERROR']+'\n';
   } else if (Object.keys(input).length === 0) {
-    return "NULL";
+    return "NULL\n";
   }
   for (var key in input) {
     if (typeof input[key] == 'object') {
@@ -400,7 +401,7 @@ function discordStringifyObject(input, output = "", level = 0) {
       } else {
         output += "--- "+key+":\n";
       }
-      output = discordStringifyObject(input[key], output, ++level);
+      output = discordStringifyObject(input[key], output, level+1);
     //not an object, so this is a string or number
     } else {
       //level 0 recursion (servers)

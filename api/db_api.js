@@ -219,18 +219,20 @@ function floatingPtHours(val) {
 _________________________________________________________________*/
 function calcHours(db, nameMatches, typeMatches) {
   let output = {};
-  let nal = Object.keys(nameMatches).length;
-  let tyl = Object.keys(typeMatches).length;
   //set an output array with just name:{times}
   for (var spid in nameMatches) {
     if (db['stats'][spid]['times'] !== null) {
-      //output[nameMatches[spid]] = db['stats'][spid]['times'];
-      //convert seconds to hours, trim the non-queryd types
+      output[ nameMatches[spid] ]={};
       for (var type in db['stats'][spid]['times']) {
         if (typeMatches.includes(type)) {
-          output[ db['stats'][spid]['name'] ][type]['total'] = floatingPtHours(db['stats'][spid]['times'][type]['total']);
-          output[ db['stats'][spid]['name'] ][type]['inAir'] = floatingPtHours(db['stats'][spid]['times'][type]['inAir']);
+          output[nameMatches[spid]][type] = {
+            'total': floatingPtHours(db['stats'][spid]['times'][type]['total']),
+            'inAir': floatingPtHours(db['stats'][spid]['times'][type]['inAir'])
+          };
         }
+      }
+      if (Object.keys(output[nameMatches[spid]]).length === 0) {
+        delete output[ nameMatches[spid] ];
       }
     }
   }
@@ -242,16 +244,17 @@ function calcHours(db, nameMatches, typeMatches) {
 _________________________________________________________________*/
 function calcKills(db, nameMatches, typeMatches) {
   let output = {};
-  let nal = Object.keys(nameMatches).length;
-  let tyl = Object.keys(typeMatches).length;
   //set an output array with just name:{times}
   for (var spid in nameMatches) {
     if (db['stats'][spid]['kills'] !== null) {
-      output[nameMatches[spid]] = db['stats'][spid]['kills'];
-      for (var type in output[nameMatches[spid]]) {
-        if (!typeMatches.includes(type)){
-          delete output[nameMatches[spid]][type];
+      output[ nameMatches[spid] ]={};
+      for (var type in db['stats'][spid]['kills']) {
+        if (typeMatches.includes(type)) {
+          output[ nameMatches[spid] ][type] = db['stats'][spid]['kills'][type];
         }
+      }
+      if (Object.keys(output[nameMatches[spid]]).length === 0) {
+        delete output[ nameMatches[spid] ];
       }
     }
   }
