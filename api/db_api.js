@@ -224,17 +224,13 @@ function calcHours(db, nameMatches, typeMatches) {
   //set an output array with just name:{times}
   for (var spid in nameMatches) {
     if (db['stats'][spid]['times'] !== null) {
-      output[nameMatches[spid]] = db['stats'][spid]['times'];
-    }
-  }
-  //convert seconds to hours, trim the non-queryd types
-  for (var name in output) {
-    for (var type in output[name]) {
-      if (typeMatches.includes(type)){
-        output[name][type]['total'] = floatingPtHours(output[name][type]['total']);
-        output[name][type]['inAir'] = floatingPtHours(output[name][type]['inAir']);
-      } else {
-        delete output[name][type];
+      //output[nameMatches[spid]] = db['stats'][spid]['times'];
+      //convert seconds to hours, trim the non-queryd types
+      for (var type in db['stats'][spid]['times']) {
+        if (typeMatches.includes(type)) {
+          output[ db['stats'][spid]['name'] ][type]['total'] = floatingPtHours(db['stats'][spid]['times'][type]['total']);
+          output[ db['stats'][spid]['name'] ][type]['inAir'] = floatingPtHours(db['stats'][spid]['times'][type]['inAir']);
+        }
       }
     }
   }
