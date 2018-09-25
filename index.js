@@ -115,7 +115,7 @@ APP.post('/api/deaths', (request, response) => {
 });
 //API for types list
 APP.post('/api/types', (request, response) => {
-  //LOGGER.log('POST /api/types "'+request.body.command+'"', i);
+  LOGGER.log('POST /api/types "', i);
   response.json(API.getTypes()); //send them the data they need
 });
 //API for SLSC Servers

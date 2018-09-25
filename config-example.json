@@ -2,7 +2,7 @@
   "web": {
     "name":           "SLbot Flight Log",
     "description":    "Web view for SLbot server statistics",
-    "url":            "http://mydomain.com/",
+    "url":            "http://mydomain.com",
     "logo":           "http://mydomain.com/assets/patch.png",
     "tag":            "229) ",
     "database":       "db",

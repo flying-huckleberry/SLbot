@@ -286,7 +286,7 @@ function commandsCommandEmbed(CMD) {
     .setColor(CONFIG.bot.helpcolor)
     .setDescription(CONFIG.bot.helpdescription)
     .setThumbnail(CONFIG.web.logo)
-    .setFooter(CONFIG.web.url);
+    .setFooter(CONFIG.web.url+'/command');
   let ct = 1;
   for (var i in APICOMMANDS) {
     embed.addField('\u200C','-----------------------------------------------------'); //zero width non-joiner
@@ -302,6 +302,8 @@ function commandsCommandEmbed(CMD) {
 _________________________________________________________________*/
 function helpCommandEmbed(CMD) {
   let embed = new DISCORD.RichEmbed()
+    .setTitle('Commands Helper')
+    .setURL((CONFIG.web.url+'/command'))
     .setColor(CONFIG.bot.helpcolor)
     .setThumbnail(CONFIG.web.logo)
     .setFooter(CONFIG.web.url);

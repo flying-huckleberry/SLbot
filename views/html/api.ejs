@@ -16,19 +16,40 @@
           API Reference
         </h1>
         <dl class="dl-horizontal" style="font-size:15pt;">
-          <dt><code>/api/fetch</code></dt>
-          <dd>type: <span class="badge badge-primary">POST</span> | input: none | response: <span class="badge badge-primary">JSON</span></dd>
-          <dt><code>/api/servers</code></dt>
-          <dd>type: <span class="badge badge-primary">POST</span> | input: none | response: <span class="badge badge-primary">JSON</span></dd>
           <dt><code>/api/hours</code></dt>
-          <dd>type: <span class="badge badge-primary">POST</span> | input: <span class="badge badge-primary">JSON</span> <code>{ "command": STRING }</code> | response: <span class="badge badge-primary">JSON</span></dd>
+          <dd>type: <span class="badge badge-primary">POST</span> | input: <span class="badge badge-primary">JSON</span> <code>{ "command": String }</code> | response: <span class="badge badge-primary">JSON</span></dd>
           <dt><code>/api/kills</code></dt>
-          <dd>type: <span class="badge badge-primary">POST</span> | input: <span class="badge badge-primary">JSON</span> <code>{ "command": STRING }</code> | response: <span class="badge badge-primary">JSON</span></dd>
+          <dd>
+            <span>type: <span class="badge badge-primary">POST</span></span>
+            <span> | input: <span class="badge badge-primary">JSON</span> <code>{ "command": String }</code></span>
+            <span> | response: <span class="badge badge-primary">JSON</span></span>
+          </dd>
           <dt><code>/api/deaths</code></dt>
-          <dd>type: <span class="badge badge-primary">POST</span> | input: <span class="badge badge-primary">JSON</span> <code>{ "command": STRING }</code> | response: <span class="badge badge-primary">JSON</span></dd>
+          <dd>
+            <span>type: <span class="badge badge-primary">POST</span>
+            <span> | input: <span class="badge badge-primary">JSON</span> <code>{ "command": String }</code></span>
+            <span> | response: <span class="badge badge-primary">JSON</span>
+          </dd>
+          <dt><code>/api/types</code></dt>
+          <dd>
+            <span>type: <span class="badge badge-primary">POST</span></span>
+            <span> | input: none</span>
+            <span> | response: <span class="badge badge-primary">JSON</span> <code>{ "hours": Array, "kills": Array }</code></span>
+          </dd>
+          <dt><code>/api/servers</code></dt>
+          <dd>
+            <span>type: <span class="badge badge-primary">POST</span></span>
+            <span> | input: none</span>
+            <span> | response: <span class="badge badge-primary">JSON</span></span>
+          </dd>
+          <dt><code>/api/fetch</code></dt>
+          <dd>
+            <span>type: <span class="badge badge-primary">POST</span></span>
+            <span> | input: none</span>
+            <span> | response: <span class="badge badge-primary">JSON</span></span>
+          </dd>
         </dl>
       </div>
-
 
     </main>
 
