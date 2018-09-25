@@ -413,7 +413,7 @@ function singleHours(CMD, server = false) {
     let nameMatches = matchNames(CMD.args[0], serverdb[server]['stats']);
     //if no names matching that pattern
     if (Object.keys(nameMatches).length == 0) {
-      return apiErr('Cannot find name matching `'+CMD.args[0]+'` in `'+server+'`');
+      return {};
     }
     let typeMatches = matchAirTypes(CMD.args[1]);
     if (Object.keys(typeMatches).length == 0) {
@@ -444,7 +444,7 @@ function singleKills(CMD, server = false) {
     let nameMatches = matchNames(CMD.args[0], serverdb[server]['stats']);
     //if no names matching that pattern
     if (Object.keys(nameMatches).length == 0) {
-      return apiErr('Cannot find name matching `'+CMD.args[0]+'` in `'+server+'`');
+      return {}; //return only soft fail, so nothing will be added to a list
     }
     let typeMatches = matchKillTypes(CMD.args[1]);
     if (Object.keys(typeMatches).length == 0) {
@@ -475,7 +475,7 @@ function singleDeaths(CMD, server = false) {
     let nameMatches = matchNames(CMD.args[0], serverdb[server]['stats']);
     //if no names matching that pattern
     if (Object.keys(nameMatches).length == 0) {
-      return apiErr('Cannot find name matching `'+CMD.args[0]+'` in `'+server+'`');
+      return {};
     }
     //server, name, type are clean. lets do the thing!
     //send the server json, the whitelisted names and whitelisted types

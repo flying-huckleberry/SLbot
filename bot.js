@@ -390,6 +390,8 @@ _________________________________________________________________*/
 function discordStringifyObject(input, output = "", level = 0) {
   if (level == 0 && Object.keys(input).includes('ERROR')) {
     return '**ERROR**: '+input['ERROR'];
+  } else if (Object.keys(input).length === 0) {
+    return "NULL";
   }
   for (var key in input) {
     if (typeof input[key] == 'object') {
