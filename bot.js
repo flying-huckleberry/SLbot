@@ -9,17 +9,17 @@
 
     By Huckleberry
 ______________________________________________________*/
-const DISCORD = require('discord.js');
-const BOT = new DISCORD.Client();
-const COOLDOWNS = new DISCORD.Collection();
-const LOGGER = require('./logger.js');
+const Discord = require('discord.js');
+const Bot = new Discord.Client();
+const Cooldowns = new Discord.Collection();
+const Logger = require('./logger.js');
 const API = require('./api/db_api.js');
-const APICOMMANDS = require('./registry/api-commands.json');
-const CONFIG = require('./config.json');
-const TOKENS = require('./tokens.json');
+const APICommands = require('./registry/api-commands.json');
+const Config = require('./config.json');
+const Tokens = require('./tokens.json');
 // var WEBHOOKS = {};
-// for (let key in TOKENS.webhooks) {
-//   WEBHOOKS[key] = new DISCORD.WebhookClient(TOKENS.webhooks[key]['token']);
+// for (let key in Tokens.webhooks) {
+//   WEBHOOKS[key] = new Discord.WebhookClient(Tokens.webhooks[key]['token']);
 // }
 
 //vars for easy logging
@@ -30,38 +30,38 @@ const t = 'task';
 var lastUpdate = new Date();
 
 //bot is logged into discord
-BOT.on('ready', () => {
-  LOGGER.log(`${BOT.user.tag} connects to Discord`,t);
-  LOGGER.log('Guilds: '+getDiscordList().join(', '),i);
-  BOT.user.setStatus('online');
-  BOT.user.setActivity(
-    (Math.floor(Math.random() * CONFIG.bot.asimovfactor) != 0)
+Bot.on('ready', () => {
+  Logger.log(`${Bot.user.tag} connects to Discord`,t);
+  Logger.log('Guilds: '+getDiscordList().join(', '),i);
+  Bot.user.setStatus('online');
+  Bot.user.setActivity(
+    (Math.floor(Math.random() * Config.bot.asimovfactor) != 0)
       ? 'SLbot'
       : 'KILL ALL HUMANS'
   );
-  if (CONFIG.bot.serverhealthindicator) { startHealthInterval() }
+  if (Config.bot.serverhealthindicator) { startHealthInterval() }
 });
 
 //message is sent on a visible channel
-BOT.on('message', msg => {
+Bot.on('message', msg => {
   if (msg.author.bot) return;
   if (msg.channel.type === "dm") return;
-  if (CONFIG.bot.defaultonly
-        && msg.channel.name != CONFIG.bot.defaultchannel) return;
+  if (Config.bot.defaultonly
+        && msg.channel.name != Config.bot.defaultchannel) return;
 
   //CHECK IF COMMAND
   //if the first character is a command prefix, parse the command + args out
-  if (msg.content.charAt(0) === CONFIG.bot.prefix) {
+  if (msg.content.charAt(0) === Config.bot.prefix) {
 
     //-------------------------------------
     // COMMANDS
     //-------------------------------------
     const CMD = sanitizeCmd(msg.content);
 
-    if (!COOLDOWNS.has(CMD.command)) {
-        COOLDOWNS.set(CMD.command, new DISCORD.Collection());
+    if (!Cooldowns.has(CMD.command)) {
+        Cooldowns.set(CMD.command, new Discord.Collection());
     }
-    const timestamps = COOLDOWNS.get(CMD.command);
+    const timestamps = Cooldowns.get(CMD.command);
     const cooldownAmount = 4000; //4 seconds
     const now = Date.now();
     //timestamps is clear of this author, but not anymore!
@@ -89,7 +89,7 @@ BOT.on('message', msg => {
       hours, kills, deaths, servers, stats, commands, help
     _________________________________________________________________*/
     //if the current command is in the commands list above
-    if (Object.keys(APICOMMANDS).includes(CMD.command)) {
+    if (Object.keys(APICommands).includes(CMD.command)) {
       sendCommandReply(
         msg,
         createAPIEmbed(CMD),
@@ -101,7 +101,7 @@ BOT.on('message', msg => {
     if (CMD.command === 'doabarrelroll') {
       //sendCommandReply(msg, '*barrel rolls*', '*barrel rolls*');
       msg.channel.send('*barrel rolls*')
-        .then(message => LOGGER.log(commandInfo(msg), i))
+        .then(message => Logger.log(commandInfo(msg), i))
         .catch(console.error);
         //msg.reply('*barrel rolls*')
     }
@@ -110,7 +110,7 @@ BOT.on('message', msg => {
       returns RichEmbed GIF
     _________________________________________________________________*/
     if (CMD.command === 'redtails') {
-      const embed = new DISCORD.RichEmbed()
+      const embed = new Discord.RichEmbed()
         .setTitle('Red Tails Maneuver')
         .setColor(0xCF0000)
         .setDescription('I flit, I float, I fleetly flee, I fly')
@@ -127,14 +127,14 @@ BOT.on('message', msg => {
       let user = msg.mentions.users.first();
       let embed;
       if (!user) {
-        embed = new DISCORD.RichEmbed()
+        embed = new Discord.RichEmbed()
           .setTitle('ERROR')
-          .setColor(CONFIG.bot.helpcolor)
-          .setDescription("Syntax: `"+CONFIG.bot.prefix+"pic` `<@username>`");
+          .setColor(Config.bot.helpcolor)
+          .setDescription("Syntax: `"+Config.bot.prefix+"pic` `<@username>`");
       } else {
         //configure the embed
-        embed = new DISCORD.RichEmbed()
-        .setColor(CONFIG.bot.color)
+        embed = new Discord.RichEmbed()
+        .setColor(Config.bot.color)
         .setAuthor(user.username,user.avatarURL)
         .setTitle('Open original')
         .setURL(user.avatarURL)
@@ -150,13 +150,13 @@ BOT.on('message', msg => {
       https://discord.js.org/#/docs/main/stable/class/RichEmbed
     _________________________________________________________________*/
     if (CMD.command === 'serverpic') {
-      let embed = new DISCORD.RichEmbed()
-          .setColor(CONFIG.bot.color)
+      let embed = new Discord.RichEmbed()
+          .setColor(Config.bot.color)
           .setAuthor(msg.guild.name, msg.guild.iconURL)
           .setTitle('Open original')
           .setURL(msg.guild.iconURL)
           .setImage(msg.guild.iconURL)
-          .setFooter(CONFIG.web.url);
+          .setFooter(Config.web.url);
       //send it to the discord channel
       sendCommandReply(msg, embed, commandInfo(msg));
     }
@@ -169,7 +169,7 @@ BOT.on('message', msg => {
     // if (CMD.command === 'mycommand') {
     //
     //   //configure the embed
-    //   const embed = new DISCORD.RichEmbed()
+    //   const embed = new Discord.RichEmbed()
     //     .setTitle('New Command')
     //     .setColor(0xCF0000)
     //     .setDescription('More commands coming soon...');
@@ -281,17 +281,17 @@ function createAPIEmbed(CMD) {
   returns RichEmbed with all commands listed as help
 _________________________________________________________________*/
 function commandsCommandEmbed(CMD) {
-  let embed = new DISCORD.RichEmbed()
+  let embed = new Discord.RichEmbed()
     .setTitle('SLbot Help')
-    .setColor(CONFIG.bot.helpcolor)
-    .setDescription(CONFIG.bot.helpdescription)
-    .setThumbnail(CONFIG.web.logo)
-    .setFooter(CONFIG.web.url+'/command');
+    .setColor(Config.bot.helpcolor)
+    .setDescription(Config.bot.helpdescription)
+    .setThumbnail(Config.web.logo)
+    .setFooter(Config.web.url+'/command');
   let ct = 1;
-  for (var i in APICOMMANDS) {
+  for (var i in APICommands) {
     embed.addField('\u200C','-----------------------------------------------------'); //zero width non-joiner
-    for (var k in APICOMMANDS[i]) {
-      embed.addField(k,APICOMMANDS[i][k]);
+    for (var k in APICommands[i]) {
+      embed.addField(k,APICommands[i][k]);
     }
   }
   return embed;
@@ -301,14 +301,14 @@ function commandsCommandEmbed(CMD) {
   returns RichEmbed for 1 command as help
 _________________________________________________________________*/
 function helpCommandEmbed(CMD) {
-  let embed = new DISCORD.RichEmbed()
+  let embed = new Discord.RichEmbed()
     .setTitle('Commands Helper')
-    .setURL((CONFIG.web.url+'/command'))
-    .setColor(CONFIG.bot.helpcolor)
-    .setThumbnail(CONFIG.web.logo)
-    .setFooter(CONFIG.web.url);
-  for (var k in APICOMMANDS[CMD.command]) {
-    embed.addField(k,APICOMMANDS[CMD.command][k]);
+    .setURL((Config.web.url+'/command'))
+    .setColor(Config.bot.helpcolor)
+    .setThumbnail(Config.web.logo)
+    .setFooter(Config.web.url);
+  for (var k in APICommands[CMD.command]) {
+    embed.addField(k,APICommands[CMD.command][k]);
   }
   return embed;
 }
@@ -317,13 +317,13 @@ function helpCommandEmbed(CMD) {
   returns RichEmbed as link to the web server
 _________________________________________________________________*/
 function statsCommandEmbed(CMD) {
-  let embed = new DISCORD.RichEmbed()
-    .setTitle(CONFIG.web.name)
-    .setColor(CONFIG.bot.color)
-    .setDescription(CONFIG.web.description)
-    .setThumbnail(CONFIG.web.logo)
-    .setURL(CONFIG.web.url)
-    .setFooter(CONFIG.web.url);
+  let embed = new Discord.RichEmbed()
+    .setTitle(Config.web.name)
+    .setColor(Config.bot.color)
+    .setDescription(Config.web.description)
+    .setThumbnail(Config.web.logo)
+    .setURL(Config.web.url)
+    .setFooter(Config.web.url);
   return embed;
 }
 /*
@@ -331,12 +331,12 @@ function statsCommandEmbed(CMD) {
   returns RichEmbed as list of connected SLmod servers
 _________________________________________________________________*/
 function serversCommandEmbed(CMD) {
-  let embed = new DISCORD.RichEmbed()
-    .setTitle(`Server List for ${CONFIG.web.name}`)
-    .setColor(CONFIG.bot.color)
+  let embed = new Discord.RichEmbed()
+    .setTitle(`Server List for ${Config.web.name}`)
+    .setColor(Config.bot.color)
     .setDescription(discordStringifyObject(API.getServers())) //TODO API call
-    .setThumbnail(CONFIG.web.logo)
-    .setFooter(CONFIG.web.url);
+    .setThumbnail(Config.web.logo)
+    .setFooter(Config.web.url);
   return embed;
 }
 /*
@@ -351,13 +351,13 @@ function hkdCommandEmbed(CMD) {
             .addField('ERROR', 'Command must be `hours`, `kills`, or `deaths`');
   }
   let discordStr = discordStringifyObject(fields);
-  //LOGGER.log(JSON.stringify(fields, null, 4),i);
+  //Logger.log(JSON.stringify(fields, null, 4),i);
   //immutable values for embed
-  let embed = new DISCORD.RichEmbed()
+  let embed = new Discord.RichEmbed()
     .setTitle(`${CMD.command.toUpperCase()} Statistic Reporter`)
     .setDescription(`${CMD.args[0]}'s ${CMD.args[2]||'total'} ${CMD.command} in ${CMD.args[1]||'server'}`)
-    .setThumbnail(CONFIG.web.logo)
-    .setFooter(CONFIG.web.url)
+    .setThumbnail(Config.web.logo)
+    .setFooter(Config.web.url)
     .addField( //capitalize first letter of CMD.command
       CMD.command.slice(0,1).toUpperCase()+CMD.command.slice(1),
       discordStr
@@ -366,10 +366,10 @@ function hkdCommandEmbed(CMD) {
     embed.addField('Alert',"Output is too long for Discord.\nUse more specific argument values,\nor type `!stats` to link the web view.");
   }
   if (fields.hasOwnProperty('ERROR')) {
-    LOGGER.log('SLbot embed has API error: '+fields['ERROR'], i);
-    embed.setColor(CONFIG.bot.helpcolor);
+    Logger.log('SLbot embed has API error: '+fields['ERROR'], i);
+    embed.setColor(Config.bot.helpcolor);
   } else {
-    embed.setColor(CONFIG.bot.color);
+    embed.setColor(Config.bot.color);
   }
   return embed;
 }
@@ -378,12 +378,12 @@ function hkdCommandEmbed(CMD) {
   returns RichEmbed error, command is not properly configured
 _________________________________________________________________*/
 function unknownCommandEmbed(CMD) {
-  const embed = new DISCORD.RichEmbed()
+  const embed = new Discord.RichEmbed()
     .setTitle('SLbot Help')
-    .setColor(CONFIG.bot.helpcolor)
+    .setColor(Config.bot.helpcolor)
     .setDescription('Unknown Command: `'+CMD.command+'`')
-    .setThumbnail(CONFIG.web.logo)
-    .setFooter(CONFIG.web.url);
+    .setThumbnail(Config.web.logo)
+    .setFooter(Config.web.url);
   return embed;
 }
 /*
@@ -429,28 +429,28 @@ function discordStringifyObject(input, output = "", level = 0) {
   based on how long ago it received a server update
 _________________________________________________________________*/
 function startHealthInterval() {
-  BOT.setInterval(function() {
+  Bot.setInterval(function() {
     let hoursSinceUpdate = ((new Date()-lastUpdate)/3600000);
     //console.log('hoursSince='+hoursSinceUpdate);
-    //LOGGER.log('uptime '+(BOT.uptime/60000).toFixed(2)+' mins',i);
-    if (BOT.user.presence.status !== 'online'
+    //Logger.log('uptime '+(Bot.uptime/60000).toFixed(2)+' mins',i);
+    if (Bot.user.presence.status !== 'online'
         && hoursSinceUpdate <= 24) {
-      //LOGGER.log('setting online',i);
-      BOT.user.setStatus('online');
+      //Logger.log('setting online',i);
+      Bot.user.setStatus('online');
     //30 min since last run, status not idle
-    } else if (BOT.user.presence.status !== 'idle'
+    } else if (Bot.user.presence.status !== 'idle'
         && hoursSinceUpdate > 24 && hoursSinceUpdate <= 48) {
-      //LOGGER.log('setting idle',i);
-      BOT.user.setStatus('idle');
+      //Logger.log('setting idle',i);
+      Bot.user.setStatus('idle');
     //1 hour since last run, status not dnd
-    } else if (BOT.user.presence.status != 'dnd'
+    } else if (Bot.user.presence.status != 'dnd'
         && hoursSinceUpdate > 48) {
-      //LOGGER.log('setting dnd',i);
-      BOT.user.setStatus('dnd');
+      //Logger.log('setting dnd',i);
+      Bot.user.setStatus('dnd');
     //fringe case, bring things back into normity
-    } else if (!['dnd','idle','online'].includes(BOT.user.presence.status)) {
-      //LOGGER.log('setting online',i);
-      BOT.user.setStatus('online');
+    } else if (!['dnd','idle','online'].includes(Bot.user.presence.status)) {
+      //Logger.log('setting online',i);
+      Bot.user.setStatus('online');
     }
   //run every hour
   }, 3600000);
@@ -463,7 +463,7 @@ function startHealthInterval() {
 _________________________________________________________________*/
 function sendCommandReply(msg, embed, log) {
   msg.channel.send(embed)
-    .then(message => LOGGER.log(log, i))
+    .then(message => Logger.log(log, i))
     .catch(console.error);
 }
 /*
@@ -471,8 +471,8 @@ function sendCommandReply(msg, embed, log) {
   sends a message/embed to a specific channel ID
 _________________________________________________________________*/
 function sendToChannel(cid, embed, log) {
-  BOT.channels.get(cid).send(embed)
-    .then(message => LOGGER.log(log, i))
+  Bot.channels.get(cid).send(embed)
+    .then(message => Logger.log(log, i))
     .catch(console.error);
 }
 /*
@@ -481,7 +481,7 @@ function sendToChannel(cid, embed, log) {
 _________________________________________________________________*/
 function getDiscordList() {
   let list = [];
-  for (let guild of BOT.guilds.values()) {
+  for (let guild of Bot.guilds.values()) {
     list.push(guild.name);
   }
   return list;
@@ -498,15 +498,15 @@ function commandInfo(msg) {
   when a node sends a stats update, send to the appr. channels
 _________________________________________________________________*/
 function announceUpdate(name) {
-  let embed = new DISCORD.RichEmbed()
+  let embed = new Discord.RichEmbed()
     .setTitle('Database Refreshed')
-    .setColor(CONFIG.bot.color)
+    .setColor(Config.bot.color)
     .setDescription('New update from '+name)
-    .setThumbnail(CONFIG.web.logo)
-    .setFooter(CONFIG.web.url);
-  for (var guild of BOT.guilds.values()) {
+    .setThumbnail(Config.web.logo)
+    .setFooter(Config.web.url);
+  for (var guild of Bot.guilds.values()) {
     for (var channel of guild.channels.values()) {
-      if (channel.name == CONFIG.bot.defaultchannel) {
+      if (channel.name == Config.bot.defaultchannel) {
         sendToChannel(channel.id, embed,
           'SLbot announces in '+guild.name+' channel #'+channel.name+' of an update from '+name);
       }
@@ -516,7 +516,7 @@ function announceUpdate(name) {
 }
 
 //make the bot come online in discord
-BOT.login(TOKENS.discord.token);
+Bot.login(Tokens.discord.token);
 
 module.exports = {
   announceUpdate: function(name) { return announceUpdate(name) }

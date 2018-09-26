@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "electron ."
   },
   "author": "Huckleberry",
   "license": "MIT",
@@ -14,7 +14,9 @@
     "bufferutil": "^3.0.3",
     "discord.js": "^11.4.2",
     "ejs": "^2.6.1",
+    "electron": "^2.0.0",
     "express": "^4.16.3",
+    "jquery": "^3.2.1",
     "jquery.json-viewer": "^1.1.0",
     "libsodium-wrappers": "^0.7.3",
     "node-json-db": "^0.7.5",

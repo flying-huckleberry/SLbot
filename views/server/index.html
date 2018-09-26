@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>SLbot Server Control Panel</title>
+    <link rel="stylesheet" href="../css/server.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Black+Ops+One|Archivo+Black|Slabo+27px|Open+Sans|Boogaloo">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+  </head>
+  <body class="darkbod">
+    <!--We are using Node.js <script>document.write(process.versions.node)</script>,
+    Chromium <script>document.write(process.versions.chrome)</script>,
+    and Electron <script>document.write(process.versions.electron)</script>.-->
+
+    <div class="container">
+
+      <h3>
+        SLbot
+        <small class="text-muted">Server Control Panel</small>
+      </h3>
+
+      <div class="col-md-12">
+
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+          <div class="panel panel-default">
+            <div class="panel-heading" data-toggle="collapse" data-target="#collapse1" aria-controls="collapse2" role="tab" id="heading1">
+              <h4 class="panel-title">Module Control Switches</h4>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading1">
+              <div class="panel-body">
+                  <div class="ib">
+                    <label>Web Server</label><br>
+                    <label class="switch" for="web-switch">
+                      <input type="checkbox" id="web-switch" name="web-switch">
+                      <span class="slider round"></span>
+                    </label>
+                  </div>
+                  <div class="ib">
+                    <label>Discord Bot</label><br>
+                    <label class="switch" for="bot-switch">
+                      <input type="checkbox" id="bot-switch" name="bot-switch">
+                      <span class="slider round"></span>
+                    </label>
+                  </div>
+                  <div class="ib">
+                    <label>Cron Task</label><br>
+                    <label class="switch" for="cron-switch">
+                      <input type="checkbox" id="cron-switch" name="cron-switch">
+                      <span class="slider round"></span>
+                    </label>
+                  </div>
+
+
+
+
+
+
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading" data-toggle="collapse" data-target="#collapse2" aria-controls="collapse2" role="tab" id="heading2">
+              <h4 class="panel-title">Log Messages</h4>
+            </div>
+            <div id="collapse2" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading2">
+              <div class="panel-body">
+                <div id="log"></div>
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading" data-toggle="collapse" data-target="#collapse3" role="tab" id="heading3">
+              <h4 class="panel-title">App Config</h4>
+            </div>
+            <div id="collapse3" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading3">
+              <div class="panel-body">
+                json form work
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading" data-toggle="collapse" data-target="#collapse4" role="tab" id="heading4">
+              <h4 class="panel-title">Web Server Config</h4>
+            </div>
+            <div id="collapse4" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading4">
+              <div class="panel-body">
+                json form work
+              </div>
+            </div>
+          </div>
+          <div class="panel panel-default">
+            <div class="panel-heading" data-toggle="collapse" data-target="#collapse5" role="tab" id="heading5">
+              <h4 class="panel-title">Discord Bot Config</h4>
+            </div>
+            <div id="collapse5" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading5">
+              <div class="panel-body">
+                json form work
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <script>
+      // You can also require other files to run in this process
+      require('../js/render.js');
+      require('../../server.js');
+      require('../../bot.js');
+    </script>
+    <script>window.$ = window.jQuery = require('jquery');</script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  </body>
+</html>

@@ -2,153 +2,110 @@
 
     index.js
 
-    Serves SLbot Web Server & API
-    SLbot website can be accessed from a browser
-      (your IP/domain) (remember to port forward 80:4000)
-    SLbot functions can be accessed from an API request
-      (your IP/domain) (remember to port forward 80:4000)
+    Controls the App window that opens when you run SLmod
 
     By Huckleberry
 ______________________________________________________*/
-try {
-  const EXPRESS = require('express');
-} catch(e) {
-  console.log('---------------------------------------------------------');
-  console.log('You most likely still need to run the command "npm update"');
-  console.log('or execute "Update_SLbot.bat" in the project root folder');
-  console.log('---------------------------------------------------------');
-  return;
-}
-EXPRESS = require('express');
-const BODYPARSER = require('body-parser');
-const APP = EXPRESS();
+
+const path = require('path');
+const {app, BrowserWindow, ipcMain} = require('electron');
 //----------------------------------
-const API = require('./api/db_api.js');
-const BOT = require('./bot.js');
-const CONFIG = require('./config.json');
-const TYPES = require('./registry/types.json');
-const LOGGER = require('./logger.js');
-//----------------------------------
-APP.use(BODYPARSER.urlencoded({ extended: true }));
-APP.use(BODYPARSER.json({limit:CONFIG.web.jsonsizelimit}));
-APP.use('/js', EXPRESS.static('./views/js'));
-APP.use('/css', EXPRESS.static('./views/css'));
-APP.use('/json_viewer', EXPRESS.static('./node_modules/jquery.json-viewer/json-viewer/'));
-APP.use('/assets', EXPRESS.static('./views/assets'));
-APP.set('view engine', 'ejs');
+//const Bot = require('./bot.js');
+//const Server = require('./server.js');
+//const Logger = require('./logger.js');
+const Config = require('./config.json');
+
+let mainWindow;
 //----------------------------------
 //vars for easy logging
 const e = 'error';
 const i = 'info';
 const t = 'task';
+app.on('ready', createWindow);
 
-//---------------------
-// WEB calls
-//---------------------
-
-//serve index page
-APP.get('/', (request, response) => {
-  LOGGER.log('GET  /index', i);
-  response.render('html/index', {
-      title: CONFIG.web.name,
-      name: CONFIG.web.name,
-      logo: CONFIG.web.logo,
-      treeView: CONFIG.web.treeview
-  });
-});
-//serve API fetch page
-APP.get('/command', (request, response) => {
-  LOGGER.log('GET  /command', i);
-  response.render('html/command', {
-    title: 'SLbot Command Interpreter',
-    name: CONFIG.web.name,
-    logo: CONFIG.web.logo,
-    prefix: CONFIG.bot.prefix
-  });
-});
-//server API index
-APP.get('/api', (request, response) => {
-  LOGGER.log('GET  /api', i);
-  response.render('html/api', {
-    title: 'SLbot API Overview',
-    name: CONFIG.web.name,
-    logo: CONFIG.web.logo
-  });
-});
-//serve about page
-APP.get('/about', (request, response) => {
-  LOGGER.log('GET  /about', i);
-  response.render('html/about', {
-    title: 'SLbot Info',
-    name: CONFIG.web.name
-  });
+// Quit when all windows are closed.
+app.on('window-all-closed', function () {
+  if (process.platform !== 'darwin') { app.quit(); }
 });
 
-//---------------------
-// API calls
-//---------------------
+app.on('activate', function () {
+  if (mainWindow === null) { createWindow(); }
+});
 
-//API for web call
-APP.post('/api/fetch', (request, response) => {
-  LOGGER.log('POST /api/fetch', i);
-  response.json(API.getFullStats()); //send them the data they need
+
+ipcMain.on('log', (event, arg) => {
+  //console.log(arg) // prints "ping"
+  //event.sender.send('ack', {'msg':'ok'});
+  mainWindow.webContents.send('log', {msg: arg})
 });
-//API for servers query
-APP.post('/api/servers', (request, response) => {
-  LOGGER.log('POST /api/servers', i);
-  response.json(API.getServers()); //send them the data they need
-});
-//API for hours query
-APP.post('/api/hours', (request, response) => {
-  LOGGER.log('POST /api/hours "'+request.body.command+'"', i);
-  response.json(API.getHours(sanitizeCmd(request.body.command))); //send them the data they need
-});
-//API for kills query
-APP.post('/api/kills', (request, response) => {
-  LOGGER.log('POST /api/kills "'+request.body.command+'"', i);
-  response.json(API.getKills(sanitizeCmd(request.body.command))); //send them the data they need
-});
-//API for deaths query
-APP.post('/api/deaths', (request, response) => {
-  LOGGER.log('POST /api/deaths "'+request.body.command+'"', i);
-  response.json(API.getDeaths(sanitizeCmd(request.body.command))); //send them the data they need
-});
-//API for types list
-APP.post('/api/types', (request, response) => {
-  LOGGER.log('POST /api/types "', i);
-  response.json(API.getTypes()); //send them the data they need
-});
-//API for SLSC Servers
-//update the database with new info
-APP.post('/api/dcs/slmod/update', (request, response) => {
-  LOGGER.log('POST /api/dcs/slmod/update from '+request.body.name, i);
-  var error = API.update(request.body); //update the stats and server info
-  if (error) {
-    response.end('fail');
-    LOGGER.log(error, e);
-  } else {
-    response.end('pass');
-    if (CONFIG.bot.sendupdatemessages) { BOT.announceUpdate(request.body.name) }
+
+let Web = {
+  turnOn: function() {
+    console.log('turning on web');
+  },
+  turnOff: function() {
+    console.log('turning off web');
+  },
+  isOn: function() {
+    return true;
   }
+}
+
+ipcMain.on('web-state', (event, current) => {
+  current ? Web.turnOff() : Web.turnOn()
+  event.sender.send('web-state', Web.isOn() ? true : false);
 });
 
-//serve app
-APP.listen(CONFIG.web.port || 4000, function() {
-  LOGGER.log('SLbot awakens on port ' + CONFIG.web.port, t);
-});
+// ipcMain.on('bot-state', (event, current) => {
+//   current ? Bot.turnOff() : Web.turnOn()
+//   event.sender.send('web-state', Web.isOn() ? true : false);
+// });
+
+// ipcMain.on('cron-state', (event, current) => {
+//   current ? Cron.turnOff() : Web.turnOn()
+//   event.sender.send('web-state', Web.isOn() ? true : false);
+// });
 
 /*
-  sanitizeCmd
-  sanitizes and formats the raw string command from the user
+  createWindow
+  creates the window the app command interface is served to
 _________________________________________________________________*/
-function sanitizeCmd(input) {
-  input = input.split(' ');
-  //sanitize the array
-  for (var i in input) {
-    input[i] = input[i].toLowerCase().replace(/[^\w\s]/gi, '');
-  }
-  return {
-    'command': input[0],
-    'args': input.slice(1) //array slice the command off the args list
-  };
+function createWindow () {
+  // Create the browser window.
+  mainWindow = new BrowserWindow({
+    // width: Config.app.width,
+    // height: Config.app.height,
+    width: 1000,
+    height: 600,
+    icon: path.join(__dirname, 'views/assets/icons/png/64x64.png'),
+    backgroundColor: '#2E2C29',
+    show: false
+  });
+
+  mainWindow.on('ready-to-show', () => {
+    mainWindow.show();
+    // mainWindow.webContents.send('proc', {msg: processStats.getProcessMemoryInfo()});
+    // setInterval(function() {
+    //   mainWindow.webContents.send('proc', {msg: processStats.getProcessMemoryInfo()});
+    // }, 5000);
+  });
+
+  // and load the index.html of the app.
+  mainWindow.loadFile('./views/server/index.html');
+
+  // Open the DevTools.
+  mainWindow.webContents.openDevTools();
+
+  mainWindow.webContents.on('did-finish-load', () => {
+    console.log('did-finish-load');
+  });
+
+  // Emitted when the window is closed.
+  mainWindow.on('closed', function () {
+    // Dereference the window object, usually you would store windows
+    // in an array if your app supports multi windows, this is the time
+    // when you should delete the corresponding element.
+    mainWindow = null;
+  });
+  require(path.join(__dirname, 'menu/mainmenu'));
 }

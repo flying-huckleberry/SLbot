@@ -12,7 +12,14 @@
 ______________________________________________________*/
 const FS = require('fs');
 const PROCESS = require('process');
-const LOGLEVEL = PROCESS.argv[2] || '-d';
+//const LOGLEVEL = PROCESS.argv[2] || '-d';
+const LOGLEVEL = '-v';
+
+const {ipcRenderer} = require('electron');
+
+ipcRenderer.on('ack', (event, arg) => {
+  console.log(arg.msg);
+});
 
 //global function for succinct logging ability
 //only log what the process wanted us to log
@@ -21,19 +28,29 @@ function log(data, level) {
   switch (level) {
     case 'error': //log all errors
       console.log(str);
+      ipcRenderer.send('log', str);
       break;
     case 'info': //only log info if verbose flag
-      if (LOGLEVEL == '-v') {console.log(str)}
+      if (LOGLEVEL == '-v') {
+        console.log(str);
+        ipcRenderer.send('log', str);
+      }
       break;
     case 'task': //log task only if the silent flag is not set
-      if (LOGLEVEL != '-s') {console.log(str)}
+      if (LOGLEVEL != '-s') {
+        console.log(str);
+        ipcRenderer.send('log', str);
+      }
       break;
     default: //something is amiss, we better just log it
       console.log(str);
+      ipcRenderer.send('log', str);
   }
   FS.appendFile('LOG.txt', str+'\r\n', function (err) {
     if (err) {
-      console.log('Unable to write to LOG.txt');
+      let er = 'Unable to write to LOG.txt';
+      console.log(er);
+      ipcRenderer.send('log', er);
     }
   });
 }
