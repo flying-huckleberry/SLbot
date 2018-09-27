@@ -36,34 +36,22 @@ app.on('activate', function () {
 ipcMain.on('log', (event, arg) => {
   //console.log(arg) // prints "ping"
   //event.sender.send('ack', {'msg':'ok'});
-  mainWindow.webContents.send('log', {msg: arg})
+  mainWindow.webContents.send('log', arg)
 });
-
-let Web = {
-  turnOn: function() {
-    console.log('turning on web');
-  },
-  turnOff: function() {
-    console.log('turning off web');
-  },
-  isOn: function() {
-    return true;
-  }
-}
 
 ipcMain.on('web-state', (event, current) => {
   current ? Web.turnOff() : Web.turnOn()
   event.sender.send('web-state', Web.isOn() ? true : false);
 });
 
-// ipcMain.on('bot-state', (event, current) => {
-//   current ? Bot.turnOff() : Web.turnOn()
-//   event.sender.send('web-state', Web.isOn() ? true : false);
-// });
+ipcMain.on('bot-state', (event, current) => {
+  current ? Bot.turnOff() : Bot.turnOn()
+  event.sender.send('bot-state', Bot.isOn() ? true : false);
+});
 
 // ipcMain.on('cron-state', (event, current) => {
-//   current ? Cron.turnOff() : Web.turnOn()
-//   event.sender.send('web-state', Web.isOn() ? true : false);
+//   current ? Cron.turnOff() : Cron.turnOn()
+//   event.sender.send('cron-state', Cron.isOn() ? true : false);
 // });
 
 /*

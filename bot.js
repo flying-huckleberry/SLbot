@@ -31,8 +31,8 @@ var lastUpdate = new Date();
 
 //bot is logged into discord
 Bot.on('ready', () => {
-  Logger.log(`${Bot.user.tag} connects to Discord`,t);
-  Logger.log('Guilds: '+getDiscordList().join(', '),i);
+  Logger.log(`${Bot.user.tag} AWAKE on Discord`, t);
+  Logger.log('Guilds: '+getDiscordList().join(', '), i);
   Bot.user.setStatus('online');
   Bot.user.setActivity(
     (Math.floor(Math.random() * Config.bot.asimovfactor) != 0)
@@ -59,7 +59,7 @@ Bot.on('message', msg => {
     const CMD = sanitizeCmd(msg.content);
 
     if (!Cooldowns.has(CMD.command)) {
-        Cooldowns.set(CMD.command, new Discord.Collection());
+      Cooldowns.set(CMD.command, new Discord.Collection());
     }
     const timestamps = Cooldowns.get(CMD.command);
     const cooldownAmount = 4000; //4 seconds
@@ -515,9 +515,30 @@ function announceUpdate(name) {
   lastUpdate = new Date();
 }
 
-//make the bot come online in discord
-Bot.login(Tokens.discord.token);
+
+
+
+function turnOn() {
+  //make the bot come online in discord
+  Logger.log('Bot server starting...', t)
+  Bot.login(Tokens.discord.token);
+}
+
+function turnOff() {
+  Bot.destroy();
+  Logger.log('Bot server STOPPED', t)
+}
+
 
 module.exports = {
-  announceUpdate: function(name) { return announceUpdate(name) }
+  announceUpdate: function(name) { return announceUpdate(name) },
+  turnOn: function() {
+    turnOn();
+  },
+  turnOff: function() {
+    turnOff();
+  },
+  isOn: function() {
+    return Bot? true : false;
+  }
 }

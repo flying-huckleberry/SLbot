@@ -13,14 +13,18 @@ ______________________________________________________*/
 const Express = require('express');
 const Path = require('path');
 const BodyParser = require('body-parser');
-const {ipcMain, BrowserWindow} = require('electron');
+const {ipcRenderer, BrowserWindow} = require('electron');
 const Web = Express();
+const helmet = require('helmet');
+var Server = false;
 //----------------------------------
 const API = require('./api/db_api.js');
 const Config = require('./config.json');
 const Logger = require('./logger.js');
 let mainWindow;
 //----------------------------------
+Web.use(helmet());
+Web.use(helmet.referrerPolicy({ policy: 'same-origin' }));
 Web.use(BodyParser.urlencoded({ extended: true }));
 Web.use(BodyParser.json({limit:Config.web.jsonsizelimit}));
 Web.use('/js', Express.static('./views/js'));
@@ -47,7 +51,6 @@ const t = 'task';
 Web.get('/', (request, response) => {
   let str = 'GET  /index';
   Logger.log(str, i);
-  BrowserWindow.getFocusedWindow().webContents.send('log', str);
   response.render('html/index', {
       title: Config.web.name,
       name: Config.web.name,
@@ -59,7 +62,6 @@ Web.get('/', (request, response) => {
 Web.get('/command', (request, response) => {
   let str = 'GET  /command';
   Logger.log(str, i);
-  BrowserWindow.getFocusedWindow().webContents.send('log', str);
   response.render('html/command', {
     title: 'SLbot Command Interpreter',
     name: Config.web.name,
@@ -71,7 +73,6 @@ Web.get('/command', (request, response) => {
 Web.get('/api', (request, response) => {
   let str = 'GET  /api';
   Logger.log(str, i);
-  BrowserWindow.getFocusedWindow().webContents.send('log', str);
   response.render('html/api', {
     title: 'SLbot API Overview',
     name: Config.web.name,
@@ -82,7 +83,6 @@ Web.get('/api', (request, response) => {
 Web.get('/about', (request, response) => {
   let str = 'GET  /about';
   Logger.log(str, i);
-  BrowserWindow.getFocusedWindow().webContents.send('log', str);
   response.render('html/about', {
     title: 'SLbot Info',
     name: Config.web.name
@@ -97,14 +97,12 @@ Web.get('/about', (request, response) => {
 Web.post('/api/fetch', (request, response) => {
   let str = 'POST /api/fetch';
   Logger.log(str, i);
-  BrowserWindow.getFocusedWindow().webContents.send('log', str);
   response.json(API.getFullStats()); //send them the data they need
 });
 //API for servers query
 Web.post('/api/servers', (request, response) => {
   let str = 'POST /api/servers';
   Logger.log(str, i);
-  BrowserWindow.getFocusedWindow().webContents.send('log', str);
   response.json(API.getServers()); //send them the data they need
 });
 //API for hours query
@@ -112,28 +110,24 @@ Web.post('/api/hours', (request, response) => {
   let str = 'POST /api/hours "'+request.body.command+'"';
   ipcRenderer.send('log', 'GET  /index');
   Logger.log(str, i);
-  BrowserWindow.getFocusedWindow().webContents.send('log', str);
   response.json(API.getHours(sanitizeCmd(request.body.command))); //send them the data they need
 });
 //API for kills query
 Web.post('/api/kills', (request, response) => {
   let str = 'POST /api/kills "'+request.body.command+'"';
   Logger.log(str, i);
-  BrowserWindow.getFocusedWindow().webContents.send('log', str);
   response.json(API.getKills(sanitizeCmd(request.body.command))); //send them the data they need
 });
 //API for deaths query
 Web.post('/api/deaths', (request, response) => {
   let str = 'POST /api/deaths "'+request.body.command+'"';
   Logger.log(str, i);
-  BrowserWindow.getFocusedWindow().webContents.send('log', str);
   response.json(API.getDeaths(sanitizeCmd(request.body.command))); //send them the data they need
 });
 //API for types list
 Web.post('/api/types', (request, response) => {
   let str = 'POST /api/types';
   Logger.log(str, i);
-  BrowserWindow.getFocusedWindow().webContents.send('log', str);
   response.json(API.getTypes()); //send them the data they need
 });
 //API for SLSC Servers
@@ -141,7 +135,6 @@ Web.post('/api/types', (request, response) => {
 Web.post('/api/dcs/slmod/update', (request, response) => {
   let str = 'POST /api/dcs/slmod/update from '+request.body.name;
   Logger.log(str,i);
-  ipcRenderer.send('log',str);
   var error = API.update(request.body); //update the stats and server info
   if (error) {
     response.end('fail');
@@ -151,6 +144,7 @@ Web.post('/api/dcs/slmod/update', (request, response) => {
     if (Config.bot.sendupdatemessages) { Bot.announceUpdate(request.body.name) }
   }
 });
+
 
 
 
@@ -173,31 +167,23 @@ function sanitizeCmd(input) {
 
 function turnOn() {
   //serve app
-  console.log('turning on');
-  Web.listen(Config.web.port || 4000, function() {
-    Logger.log('SLbot awakens on port ' + Config.web.port, t);
-  });
-  console.log(Web.address);
+  Server = Web.listen(Config.web.port || 4000);
+  if (Server) { Logger.log('Web server AWAKE on port ' + Config.web.port, t); }
 }
 
 function turnOff() {
-  console.log('turning off');
-  Web.close();
-}
-function isOn() {
-  return Web.address;
+  Server.close(function() { Logger.log('Web server STOPPED', t) });
+  Logger.log('Web server stopping...', i);
 }
 
 module.exports = {
   turnOn: function() {
-    console.log('turning on web');
-    return turnOn();
+    turnOn();
   },
   turnOff: function() {
-    console.log('turning off web');
-    return turnOff();
+    turnOff();
   },
   isOn: function() {
-    return isOn()
+    return Server? Server.address() : false;
   }
 }
