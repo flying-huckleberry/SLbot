@@ -4,14 +4,49 @@ const {version} = require(path.join(__dirname, '../package.json'));
 
 const template = [
   {
-    role: 'SLbot',
+    label: 'App',
+    role: 'window',
     submenu: [
+      {
+        label: 'Reload',
+        accelerator: 'CmdOrCtrl+R',
+        click (item, focusedWindow) {
+          if (focusedWindow) focusedWindow.reload()
+        }
+      },
       {
         role: 'minimize'
       },
       {
-        label: 'Stop & Exit',
         role: 'close'
+      }
+    ]
+  },
+  {
+    label: 'Zoom',
+    submenu: [
+      // {
+      //   label: 'Toggle Developer Tools',
+      //   accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
+      //   click (item, focusedWindow) {
+      //     if (focusedWindow) focusedWindow.webContents.toggleDevTools()
+      //   }
+      // },
+      {
+        role: 'resetzoom'
+      },
+      {
+        role: 'zoomin',
+        accelerator: 'CmdOrCtrl+=',
+      },
+      {
+        role: 'zoomout'
+      },
+      {
+        type: 'separator'
+      },
+      {
+        role: 'togglefullscreen'
       }
     ]
   },
@@ -45,51 +80,20 @@ const template = [
     ]
   },
   {
-    label: 'View',
-    submenu: [
-      {
-        label: 'Restart',
-        accelerator: 'CmdOrCtrl+R',
-        click (item, focusedWindow) {
-          if (focusedWindow) focusedWindow.reload()
-        }
-      },
-      {
-        label: 'Toggle Developer Tools',
-        accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
-        click (item, focusedWindow) {
-          if (focusedWindow) focusedWindow.webContents.toggleDevTools()
-        }
-      },
-      {
-        type: 'separator'
-      },
-      {
-        role: 'resetzoom'
-      },
-      {
-        role: 'zoomin'
-      },
-      {
-        role: 'zoomout'
-      },
-      {
-        type: 'separator'
-      },
-      {
-        role: 'togglefullscreen'
-      }
-    ]
-  },
-  {
     role: 'help',
     submenu: [
       {
         label: 'About',
         click (item, focusedWindow) {
           let message = 'SLbot v.'+version+'\nCreated by Huckleberry in 2018\nYou are free to use, edit, and distribute under the MIT license.';
-          console.log(message);
-          focusedWindow.webContents.send('about', {msg: message});
+          focusedWindow.webContents.send('alert', message);
+        }
+      },
+      {
+        label: 'Check for Updates',
+        click (item, focusedWindow) {
+          let message = 'coming soon';
+          focusedWindow.webContents.send('alert', message);
         }
       }
     ]

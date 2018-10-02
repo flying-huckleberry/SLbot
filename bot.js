@@ -9,45 +9,43 @@
 
     By Huckleberry
 ______________________________________________________*/
-const Discord = require('discord.js');
-const Bot = new Discord.Client();
-const Cooldowns = new Discord.Collection();
-const Logger = require('./logger.js');
-const API = require('./api/db_api.js');
-const APICommands = require('./registry/api-commands.json');
-const Config = require('./config.json');
-const Tokens = require('./tokens.json');
-// var WEBHOOKS = {};
+const Discord = require('discord.js')
+const Bot = new Discord.Client()
+const Cooldowns = new Discord.Collection()
+const Logger = require('./logger.js')
+const API = require('./api/db_api.js')
+const APICommands = require('./registry/api-commands.json')
+const Config = require('./config.json')
+const Tokens = require('./tokens.json')
+// var WEBHOOKS = {}
 // for (let key in Tokens.webhooks) {
-//   WEBHOOKS[key] = new Discord.WebhookClient(Tokens.webhooks[key]['token']);
+//   WEBHOOKS[key] = new Discord.WebhookClient(Tokens.webhooks[key]['token'])
 // }
 
 //vars for easy logging
-const e = 'error';
-const i = 'info';
-const t = 'task';
+const e = 'error'
+const i = 'info'
+const t = 'task'
 
-var lastUpdate = new Date();
+var lastUpdate = new Date()
 
 //bot is logged into discord
 Bot.on('ready', () => {
-  Logger.log(`${Bot.user.tag} AWAKE on Discord`, t);
-  Logger.log('Guilds: '+getDiscordList().join(', '), i);
-  Bot.user.setStatus('online');
+  Bot.user.setStatus('online')
   Bot.user.setActivity(
     (Math.floor(Math.random() * Config.bot.asimovfactor) != 0)
       ? 'SLbot'
       : 'KILL ALL HUMANS'
-  );
+  )
   if (Config.bot.serverhealthindicator) { startHealthInterval() }
-});
+})
 
 //message is sent on a visible channel
 Bot.on('message', msg => {
-  if (msg.author.bot) return;
-  if (msg.channel.type === "dm") return;
+  if (msg.author.bot) return
+  if (msg.channel.type === "dm") return
   if (Config.bot.defaultonly
-        && msg.channel.name != Config.bot.defaultchannel) return;
+        && msg.channel.name != Config.bot.defaultchannel) return
 
   //CHECK IF COMMAND
   //if the first character is a command prefix, parse the command + args out
@@ -56,32 +54,32 @@ Bot.on('message', msg => {
     //-------------------------------------
     // COMMANDS
     //-------------------------------------
-    const CMD = sanitizeCmd(msg.content);
+    const CMD = sanitizeCmd(msg.content)
 
     if (!Cooldowns.has(CMD.command)) {
-      Cooldowns.set(CMD.command, new Discord.Collection());
+      Cooldowns.set(CMD.command, new Discord.Collection())
     }
-    const timestamps = Cooldowns.get(CMD.command);
-    const cooldownAmount = 4000; //4 seconds
-    const now = Date.now();
+    const timestamps = Cooldowns.get(CMD.command)
+    const cooldownAmount = 4000 //4 seconds
+    const now = Date.now()
     //timestamps is clear of this author, but not anymore!
     if (!timestamps.has(msg.author.id)) {
-        //console.log('adding '+msg.author.id+' to timestamps');
+        //console.log('adding '+msg.author.id+' to timestamps')
         //add it to timestamps
-        timestamps.set(msg.author.id, now);
+        timestamps.set(msg.author.id, now)
         //remove it from list after a few seconds
         setTimeout(() => function() {
-          //console.log('removing '+msg.author.id+' from timestamps');
+          //console.log('removing '+msg.author.id+' from timestamps')
           timestamps.delete(msg.author.id)
-        }, cooldownAmount);
+        }, cooldownAmount)
     }
     else {
-      const expirationTime = timestamps.get(msg.author.id) + cooldownAmount;
+      const expirationTime = timestamps.get(msg.author.id) + cooldownAmount
       if (now < expirationTime) {
-          return msg.reply(`please wait ${((expirationTime - now) / 1000).toFixed(1)} more second(s) before reusing the \`${CMD.command}\` command.`);
+          return msg.reply(`please wait ${((expirationTime - now) / 1000).toFixed(1)} more second(s) before reusing the \`${CMD.command}\` command.`)
       }
-      timestamps.set(msg.author.id, now);
-      setTimeout(() => timestamps.delete(msg.author.id), cooldownAmount);
+      timestamps.set(msg.author.id, now)
+      setTimeout(() => timestamps.delete(msg.author.id), cooldownAmount)
     }
 
     /*
@@ -93,16 +91,16 @@ Bot.on('message', msg => {
       sendCommandReply(
         msg,
         createAPIEmbed(CMD),
-        commandInfo(msg));
+        commandInfo(msg))
     }
     /*
       !doabarrelroll
     _________________________________________________________________*/
     if (CMD.command === 'doabarrelroll') {
-      //sendCommandReply(msg, '*barrel rolls*', '*barrel rolls*');
+      //sendCommandReply(msg, '*barrel rolls*', '*barrel rolls*')
       msg.channel.send('*barrel rolls*')
         .then(message => Logger.log(commandInfo(msg), i))
-        .catch(console.error);
+        .catch(console.error)
         //msg.reply('*barrel rolls*')
     }
     /*
@@ -114,8 +112,8 @@ Bot.on('message', msg => {
         .setTitle('Red Tails Maneuver')
         .setColor(0xCF0000)
         .setDescription('I flit, I float, I fleetly flee, I fly')
-        .setImage('https://thumbs.gfycat.com/FlippantUniformAustraliankestrel-small.gif');
-      sendCommandReply(msg, embed, commandInfo(msg));
+        .setImage('https://thumbs.gfycat.com/FlippantUniformAustraliankestrel-small.gif')
+      sendCommandReply(msg, embed, commandInfo(msg))
     }
 
     /*
@@ -124,13 +122,13 @@ Bot.on('message', msg => {
       https://discord.js.org/#/docs/main/stable/class/RichEmbed
     _________________________________________________________________*/
     if (CMD.command === 'pic') {
-      let user = msg.mentions.users.first();
-      let embed;
+      let user = msg.mentions.users.first()
+      let embed
       if (!user) {
         embed = new Discord.RichEmbed()
           .setTitle('ERROR')
           .setColor(Config.bot.helpcolor)
-          .setDescription("Syntax: `"+Config.bot.prefix+"pic` `<@username>`");
+          .setDescription("Syntax: `"+Config.bot.prefix+"pic` `<@username>`")
       } else {
         //configure the embed
         embed = new Discord.RichEmbed()
@@ -138,10 +136,10 @@ Bot.on('message', msg => {
         .setAuthor(user.username,user.avatarURL)
         .setTitle('Open original')
         .setURL(user.avatarURL)
-        .setImage(user.avatarURL);
+        .setImage(user.avatarURL)
       }
       //send it to the discord channel
-      sendCommandReply(msg, embed, commandInfo(msg));
+      sendCommandReply(msg, embed, commandInfo(msg))
     }
 
     /*
@@ -156,9 +154,9 @@ Bot.on('message', msg => {
           .setTitle('Open original')
           .setURL(msg.guild.iconURL)
           .setImage(msg.guild.iconURL)
-          .setFooter(Config.web.url);
+          .setFooter(Config.web.url)
       //send it to the discord channel
-      sendCommandReply(msg, embed, commandInfo(msg));
+      sendCommandReply(msg, embed, commandInfo(msg))
     }
 
     // /*
@@ -172,13 +170,13 @@ Bot.on('message', msg => {
     //   const embed = new Discord.RichEmbed()
     //     .setTitle('New Command')
     //     .setColor(0xCF0000)
-    //     .setDescription('More commands coming soon...');
+    //     .setDescription('More commands coming soon...')
     //
     //   //send it to the discord channel
-    //   sendCommandReply(msg, embed, msg.content);
+    //   sendCommandReply(msg, embed, msg.content)
     // }
   }
-});
+})
 
 //-------------------
 // HELPERS
@@ -188,36 +186,36 @@ Bot.on('message', msg => {
   call the API hours/kills/deaths function depending on command
 _________________________________________________________________*/
 function hkdAPI(CMD) {
-  let fields = false;
+  let fields = false
   switch (CMD.command) {
     case 'hours':
-      fields = API.getHours(CMD);
-      break;
+      fields = API.getHours(CMD)
+      break
     case 'kills':
-      fields = API.getKills(CMD);
-      break;
+      fields = API.getKills(CMD)
+      break
     case 'deaths':
-      fields = API.getDeaths(CMD);
-      break;
+      fields = API.getDeaths(CMD)
+      break
     default:
-      fields = {'ERROR': 'command `'+CMD.command+'` is not in { `hours`, `kills`, `deaths` }'};
+      fields = {'ERROR': 'command `'+CMD.command+'` is not in { `hours`, `kills`, `deaths` }'}
   }
-  return fields;
+  return fields
 }
 /*
   sanitizeCmd
   sanitizes and formats the raw string command from the user
 _________________________________________________________________*/
 function sanitizeCmd(input) {
-  input = input.split(/\s+/);
+  input = input.split(/\s+/)
   //sanitize the array
   for (var i in input) {
-    input[i] = input[i].toLowerCase().replace(/[^\w]/gi, '');
+    input[i] = input[i].toLowerCase().replace(/[^\w]/gi, '')
   }
   return {
     'command': input[0],
     'args': input.slice(1) //array slice the command off the args list
-  };
+  }
 }
 /*
   createAPIEmbed
@@ -226,20 +224,20 @@ _________________________________________________________________*/
 function createAPIEmbed(CMD) {
   //if help command
   if (CMD.args[0] == 'help') {
-    return helpCommandEmbed(CMD);
+    return helpCommandEmbed(CMD)
   //if not help command
   } else {
     //if its stats
     if (CMD.command == 'stats') {
-      return statsCommandEmbed(CMD);
+      return statsCommandEmbed(CMD)
       //servers command
     } else if (CMD.command == 'servers') {
-      return serversCommandEmbed(CMD);
+      return serversCommandEmbed(CMD)
     //help, commands command
     } else if (CMD.command == 'help'
       || CMD.command == 'commands'
     ) {
-      return commandsCommandEmbed(CMD);
+      return commandsCommandEmbed(CMD)
     //hours, kills, deaths command
     } else if (
       CMD.command == 'hours'
@@ -249,7 +247,7 @@ function createAPIEmbed(CMD) {
       //not enough args
       if (!CMD.args[0] || (CMD.command != 'deaths' && !CMD.args[1])) {
         return helpCommandEmbed(CMD)
-                .addField('ERROR','Not Enough Arguments');
+                .addField('ERROR','Not Enough Arguments')
       }
       //enough args
       else { return hkdCommandEmbed(CMD) }
@@ -258,21 +256,21 @@ function createAPIEmbed(CMD) {
     //custom commands
 
     // else if (CMD.command == 'custom') {
-    //   return customCommand1(CMD);
+    //   return customCommand1(CMD)
     // }
 
     // else if (CMD.command == 'custom2') {
-    //   return customCommand2(CMD);
+    //   return customCommand2(CMD)
     // }
 
     // else if (CMD.command == 'custom3') {
-    //   return customCommand3(CMD);
+    //   return customCommand3(CMD)
     // }
 
 
     //unknown command
     else {
-      return unknownCommandEmbed(CMD);
+      return unknownCommandEmbed(CMD)
     }
   }
 }
@@ -286,15 +284,15 @@ function commandsCommandEmbed(CMD) {
     .setColor(Config.bot.helpcolor)
     .setDescription(Config.bot.helpdescription)
     .setThumbnail(Config.web.logo)
-    .setFooter(Config.web.url+'/command');
-  let ct = 1;
+    .setFooter(Config.web.url+'/command')
+  let ct = 1
   for (var i in APICommands) {
-    embed.addField('\u200C','-----------------------------------------------------'); //zero width non-joiner
+    embed.addField('\u200C','-----------------------------------------------------') //zero width non-joiner
     for (var k in APICommands[i]) {
-      embed.addField(k,APICommands[i][k]);
+      embed.addField(k,APICommands[i][k])
     }
   }
-  return embed;
+  return embed
 }
 /*
   helpCommandEmbed
@@ -306,11 +304,11 @@ function helpCommandEmbed(CMD) {
     .setURL((Config.web.url+'/command'))
     .setColor(Config.bot.helpcolor)
     .setThumbnail(Config.web.logo)
-    .setFooter(Config.web.url);
+    .setFooter(Config.web.url)
   for (var k in APICommands[CMD.command]) {
-    embed.addField(k,APICommands[CMD.command][k]);
+    embed.addField(k,APICommands[CMD.command][k])
   }
-  return embed;
+  return embed
 }
 /*
   statsCommandEmbed
@@ -323,8 +321,8 @@ function statsCommandEmbed(CMD) {
     .setDescription(Config.web.description)
     .setThumbnail(Config.web.logo)
     .setURL(Config.web.url)
-    .setFooter(Config.web.url);
-  return embed;
+    .setFooter(Config.web.url)
+  return embed
 }
 /*
   serversCommandEmbed
@@ -336,8 +334,8 @@ function serversCommandEmbed(CMD) {
     .setColor(Config.bot.color)
     .setDescription(discordStringifyObject(API.getServers())) //TODO API call
     .setThumbnail(Config.web.logo)
-    .setFooter(Config.web.url);
-  return embed;
+    .setFooter(Config.web.url)
+  return embed
 }
 /*
   hkdCommandEmbed
@@ -345,13 +343,13 @@ function serversCommandEmbed(CMD) {
 _________________________________________________________________*/
 function hkdCommandEmbed(CMD) {
   //API call
-  let fields = hkdAPI(CMD);
+  let fields = hkdAPI(CMD)
   if (!fields) {
     return helpCommandEmbed(CMD)
-            .addField('ERROR', 'Command must be `hours`, `kills`, or `deaths`');
+            .addField('ERROR', 'Command must be `hours`, `kills`, or `deaths`')
   }
-  let discordStr = discordStringifyObject(fields);
-  //Logger.log(JSON.stringify(fields, null, 4),i);
+  let discordStr = discordStringifyObject(fields)
+  //Logger.log(JSON.stringify(fields, null, 4),i)
   //immutable values for embed
   let embed = new Discord.RichEmbed()
     .setTitle(`${CMD.command.toUpperCase()} Statistic Reporter`)
@@ -361,17 +359,17 @@ function hkdCommandEmbed(CMD) {
     .addField( //capitalize first letter of CMD.command
       CMD.command.slice(0,1).toUpperCase()+CMD.command.slice(1),
       discordStr
-    );
+    )
   if (discordStr.length >= 1024) {
-    embed.addField('Alert',"Output is too long for Discord.\nUse more specific argument values,\nor type `!stats` to link the web view.");
+    embed.addField('Alert',"Output is too long for Discord.\nUse more specific argument values,\nor type `!stats` to link the web view.")
   }
   if (fields.hasOwnProperty('ERROR')) {
-    Logger.log('SLbot embed has API error: '+fields['ERROR'], i);
-    embed.setColor(Config.bot.helpcolor);
+    Logger.log('SLbot embed has API error: '+fields['ERROR'], i)
+    embed.setColor(Config.bot.helpcolor)
   } else {
-    embed.setColor(Config.bot.color);
+    embed.setColor(Config.bot.color)
   }
-  return embed;
+  return embed
 }
 /*
   unknownCommandEmbed
@@ -383,8 +381,8 @@ function unknownCommandEmbed(CMD) {
     .setColor(Config.bot.helpcolor)
     .setDescription('Unknown Command: `'+CMD.command+'`')
     .setThumbnail(Config.web.logo)
-    .setFooter(Config.web.url);
-  return embed;
+    .setFooter(Config.web.url)
+  return embed
 }
 /*
   discordStringifyObject (recursive)
@@ -392,36 +390,36 @@ function unknownCommandEmbed(CMD) {
 _________________________________________________________________*/
 function discordStringifyObject(input, output = "", level = 0) {
   if (level == 0 && Object.keys(input).includes('ERROR')) {
-    return '**ERROR**: '+input['ERROR']+'\n';
+    return '**ERROR**: '+input['ERROR']+'\n'
   } else if (Object.keys(input).length === 0) {
-    return "NULL\n";
+    return "NULL\n"
   }
   for (var key in input) {
     if (typeof input[key] == 'object') {
       if (level == 0) {
-        output += "**"+key+"**:\n";
+        output += "**"+key+"**:\n"
       } else {
-        output += "--- "+key+":\n";
+        output += "--- "+key+":\n"
       }
-      output = discordStringifyObject(input[key], output, level+1);
+      output = discordStringifyObject(input[key], output, level+1)
     //not an object, so this is a string or number
     } else {
       //level 0 recursion (servers)
       if (level == 0) {
-        output += "`"+key+"`: "+input[key]+"\n";
+        output += "`"+key+"`: "+input[key]+"\n"
       //if level 1 recursion (deaths)
       } else if (level == 1) {
-        output += ". . . "+key+": **"+input[key]+"**\n";
+        output += ". . . "+key+": **"+input[key]+"**\n"
       //if level 2 recursion (hours & kills)
       } else {
-        output += ". . . . . "+key+": **"+input[key]+"**\n";
+        output += ". . . . . "+key+": **"+input[key]+"**\n"
       }
     }
   }
   if (output.length > 1024) {
-    output = output.substring(0,1020) + " ...";
+    output = output.substring(0,1020) + " ..."
   }
-  return output;
+  return output
 }
 /*
   startHealthInterval
@@ -430,32 +428,32 @@ function discordStringifyObject(input, output = "", level = 0) {
 _________________________________________________________________*/
 function startHealthInterval() {
   Bot.setInterval(function() {
-    let hoursSinceUpdate = ((new Date()-lastUpdate)/3600000);
-    //console.log('hoursSince='+hoursSinceUpdate);
-    //Logger.log('uptime '+(Bot.uptime/60000).toFixed(2)+' mins',i);
+    let hoursSinceUpdate = ((new Date()-lastUpdate)/3600000)
+    //console.log('hoursSince='+hoursSinceUpdate)
+    //Logger.log('uptime '+(Bot.uptime/60000).toFixed(2)+' mins',i)
     if (Bot.user.presence.status !== 'online'
         && hoursSinceUpdate <= 24) {
-      //Logger.log('setting online',i);
-      Bot.user.setStatus('online');
+      //Logger.log('setting online',i)
+      Bot.user.setStatus('online')
     //30 min since last run, status not idle
     } else if (Bot.user.presence.status !== 'idle'
         && hoursSinceUpdate > 24 && hoursSinceUpdate <= 48) {
-      //Logger.log('setting idle',i);
-      Bot.user.setStatus('idle');
+      //Logger.log('setting idle',i)
+      Bot.user.setStatus('idle')
     //1 hour since last run, status not dnd
     } else if (Bot.user.presence.status != 'dnd'
         && hoursSinceUpdate > 48) {
-      //Logger.log('setting dnd',i);
-      Bot.user.setStatus('dnd');
+      //Logger.log('setting dnd',i)
+      Bot.user.setStatus('dnd')
     //fringe case, bring things back into normity
     } else if (!['dnd','idle','online'].includes(Bot.user.presence.status)) {
-      //Logger.log('setting online',i);
-      Bot.user.setStatus('online');
+      //Logger.log('setting online',i)
+      Bot.user.setStatus('online')
     }
   //run every hour
-  }, 3600000);
+  }, 3600000)
   //run every 30 seconds
-  //}, 30000);
+  //}, 30000)
 }
 /*
   sendCommandReply
@@ -464,7 +462,7 @@ _________________________________________________________________*/
 function sendCommandReply(msg, embed, log) {
   msg.channel.send(embed)
     .then(message => Logger.log(log, i))
-    .catch(console.error);
+    .catch(console.error)
 }
 /*
   sendToChannel
@@ -473,25 +471,25 @@ _________________________________________________________________*/
 function sendToChannel(cid, embed, log) {
   Bot.channels.get(cid).send(embed)
     .then(message => Logger.log(log, i))
-    .catch(console.error);
+    .catch(console.error)
 }
 /*
   getDiscordList
   returns an array of the connected Discords (guild names)
 _________________________________________________________________*/
 function getDiscordList() {
-  let list = [];
+  let list = []
   for (let guild of Bot.guilds.values()) {
-    list.push(guild.name);
+    list.push(guild.name)
   }
-  return list;
+  return list
 }
 /*
   commandInfo
   returns a string formatted for the log about the command info
 _________________________________________________________________*/
 function commandInfo(msg) {
-  return msg.author.username+' sends command "'+msg.content+'" to '+msg.guild.name+' channel #'+msg.channel.name;
+  return msg.author.username+' sends command "'+msg.content+'" to '+msg.guild.name+' channel #'+msg.channel.name
 }
 /*
   announceUpdate
@@ -503,42 +501,39 @@ function announceUpdate(name) {
     .setColor(Config.bot.color)
     .setDescription('New update from '+name)
     .setThumbnail(Config.web.logo)
-    .setFooter(Config.web.url);
+    .setFooter(Config.web.url)
   for (var guild of Bot.guilds.values()) {
     for (var channel of guild.channels.values()) {
       if (channel.name == Config.bot.defaultchannel) {
         sendToChannel(channel.id, embed,
-          'SLbot announces in '+guild.name+' channel #'+channel.name+' of an update from '+name);
+          'SLbot announces in '+guild.name+' channel #'+channel.name+' of an update from '+name)
       }
     }
   }
-  lastUpdate = new Date();
+  lastUpdate = new Date()
 }
-
-
 
 
 function turnOn() {
   //make the bot come online in discord
-  Logger.log('Bot server starting...', t)
-  Bot.login(Tokens.discord.token);
+  Logger.log('Bot Server starting...', i)
+  Bot.login(Tokens.discord.token).then(function() {
+    Logger.log(`${Bot.user.tag} AWAKE on Discord`, t)
+    Logger.log('Guilds: '+getDiscordList().join(', '), i)
+  })
 }
 
 function turnOff() {
-  Bot.destroy();
-  Logger.log('Bot server STOPPED', t)
+  Logger.log('Bot Server stopping...', i)
+  Bot.destroy().then(function() {
+    Logger.log('Bot Server STOPPED', t)
+  })
 }
 
 
 module.exports = {
-  announceUpdate: function(name) { return announceUpdate(name) },
-  turnOn: function() {
-    turnOn();
-  },
-  turnOff: function() {
-    turnOff();
-  },
-  isOn: function() {
-    return Bot? true : false;
-  }
+  isOn:           function() { return Bot? true : false },
+  turnOn:         function() { turnOn() },
+  turnOff:        function() { turnOff() },
+  announceUpdate: function(name) { return announceUpdate(name) }
 }

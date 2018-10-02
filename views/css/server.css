@@ -44,6 +44,19 @@ body.darkbod {
   height: 34px;
 }
 
+ .fullwide input.char {
+  width: 30px;
+}
+
+.fullwide input.short {
+  width: 50px;
+}
+
+.fullwide input {
+  width: 100%;
+}
+
+
 .switch input {display:none;}
 
 .slider {

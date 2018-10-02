@@ -23,10 +23,12 @@
 
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
           <div class="panel panel-default">
-            <div class="panel-heading" data-toggle="collapse" data-target="#collapse1" aria-controls="collapse2" role="tab" id="heading1">
+
+            <div class="panel-heading" data-toggle="collapse" data-target="#Module_Switch_accordion" aria-controls="Module_Switch_accordion" role="tab" id="Module_Switch_heading">
               <h4 class="panel-title">Module Control Switches</h4>
             </div>
-            <div id="collapse1" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading1">
+
+            <div id="Module_Switch_accordion" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="Module_Switch_heading">
               <div class="panel-body">
                   <div class="ib">
                     <label>Web Server</label><br>
@@ -43,72 +45,194 @@
                     </label>
                   </div>
                   <div class="ib">
-                    <label>Cron Task</label><br>
+                    <label>DCS Server</label><br>
                     <label class="switch" for="cron-switch">
                       <input type="checkbox" id="cron-switch" name="cron-switch">
                       <span class="slider round"></span>
                     </label>
                   </div>
-
-
-
-
-
-
               </div>
             </div>
+
           </div>
+
+
+
           <div class="panel panel-default">
-            <div class="panel-heading" data-toggle="collapse" data-target="#collapse2" aria-controls="collapse2" role="tab" id="heading2">
+
+            <div class="panel-heading" data-toggle="collapse" data-target="#Log_accordion" aria-controls="Log_accordion" role="tab" id="Log_heading">
               <h4 class="panel-title">Log Messages</h4>
             </div>
-            <div id="collapse2" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading2">
+
+            <div id="Log_accordion" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="Log_heading">
               <div class="panel-body">
                 <div id="log"></div>
               </div>
             </div>
+
           </div>
+
+
+
           <div class="panel panel-default">
-            <div class="panel-heading" data-toggle="collapse" data-target="#collapse3" role="tab" id="heading3">
+
+            <div class="panel-heading" data-toggle="collapse" data-target="#App_Config_accordion" role="tab" id="App_Config_heading">
               <h4 class="panel-title">App Config</h4>
             </div>
-            <div id="collapse3" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading3">
-              <div class="panel-body">
-                json form work
+
+            <div id="App_Config_accordion" class="panel-collapse collapse" role="tabpanel" aria-labelledby="App_Config_heading">
+              <div class="panel-body fullwide">
+                <div class="col-xs-4">
+                  <label for="width">Width (px)</label>
+                  <input type="number" id="width" name="width" class="short">
+                  <p>Default width of this window in pixels</p>
+                </div>
+                <div class="col-xs-4">
+                  <label for="height">Height (px)</label>
+                  <input type="number" id="height" name="height" class="short">
+                  <p>Default height of this window in pixels</p>
+                </div>
               </div>
             </div>
+
           </div>
+
+
           <div class="panel panel-default">
-            <div class="panel-heading" data-toggle="collapse" data-target="#collapse4" role="tab" id="heading4">
+
+            <div class="panel-heading" data-toggle="collapse" data-target="#Web_Config_accordion" role="tab" id="Web_Config_heading">
               <h4 class="panel-title">Web Server Config</h4>
             </div>
-            <div id="collapse4" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading4">
-              <div class="panel-body">
-                json form work
+
+            <div id="Web_Config_accordion" class="panel-collapse collapse" role="tabpanel" aria-labelledby="Web_Config_heading">
+              <div class="panel-body fullwide">
+                <div class="col-xs-6">
+                  <label for="name">Name</label>
+                  <input id="name" name="name">
+                  <p>Name is used in the website heading, and various other places.</p>
+                </div>
+                <div class="col-xs-6">
+                  <label for="tag">Name Filter</label>
+                  <input id="tag" name="tag" class="short">
+                  <p>Players that have changed their names may have more than 1 name in their list of names.  Here you can enter a filter, if your unit has a standardized nametag it will be matched by this value</p>
+                </div>
+                <div class="col-xs-6">
+                  <label for="database">Database Name</label>
+                  <input id="database" name="database" class="short">
+                  <p>No spaces.  Name your master JSON file that holds all your SLmod servers' data</p>
+                </div>
+                <div class="col-xs-6">
+                  <label for="backupdatabase">Backup DB Name</label>
+                  <input id="backupdatabase" name="backupdatabase" class="short">
+                  <p>No spaces.  Name your backup JSON file that holds all your SLmod servers' data</p>
+                </div>
+                <div class="col-xs-6">
+                  <label for="jsonsizelimit">JSON Max Size</label>
+                  <input id="jsonsizelimit" name="jsonsizelimit" class="short">
+                  <p>Number followed by 'mb' to specify megabytes.  Needs to be sufficiently larger than the largest data you recieve.</p>
+                </div>
+                <div class="col-xs-6">
+                <label for="treeview">Enable Treeview&nbsp;
+                  <input type="checkbox" id="treeview" name="treeview" class="short">
+                  <p>Check this to enable the full-data tree view on the website.  This is process intensive and can freeze some browsers</p>
+                </label>
+                </div>
+                <div class="col-xs-6">
+                  <label for="port">Port</label>
+                  <input type="number" id="port" name="port" class="short">
+                  <p>Here you can change the port this app sends and receives data on.</p>
+                </div>
+                <div class="col-xs-12">
+                  <label for="description">Description</label>
+                  <input id="description" name="description">
+                  <p>Specify a description that will show up in the top section of the commands list after the Help command is received.</p>
+                </div>
+                <div class="col-xs-12">
+                  <label for="url">URL</label>
+                  <input id="url" name="url">
+                  <p>This is used to link Discord users to the web server via the Bot.  This can be a URL or the IP of this machine.</p>
+                </div>
+                <div class="col-xs-12">
+                  <label for="logo">Logo (URL)</label>
+                  <input id="logo" name="logo">
+                  <p>External URL to an image file, which will be used as the logo for the Web app and Bot.  Note that you can put an image inside your Web server, and link to that using the URL value above.</p>
+                </div>
               </div>
             </div>
+
           </div>
+
+
+
           <div class="panel panel-default">
-            <div class="panel-heading" data-toggle="collapse" data-target="#collapse5" role="tab" id="heading5">
+
+            <div class="panel-heading" data-toggle="collapse" data-target="#Bot_Config_accordion" role="tab" id="Bot_Config_heading">
               <h4 class="panel-title">Discord Bot Config</h4>
             </div>
-            <div id="collapse5" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading5">
-              <div class="panel-body">
-                json form work
+
+            <div id="Bot_Config_accordion" class="panel-collapse collapse" role="tabpanel" aria-labelledby="Bot_Config_heading">
+              <div class="panel-body fullwide">
+                <div class="col-xs-6">
+                  <label for="prefix">Command Prefix</label>
+                  <input id="prefix" name="prefix" class="char">
+                  <p>This is a single-character that will be used in Discord at the beginning of each command.  Common values are '!' or '?'</p>
+                </div>
+                <div class="col-xs-6">
+                  <label for="defaultchannel">Default Channel</label>
+                  <input id="defaultchannel" name="defaultchannel" class="short">
+                  <p>When the database is updated, SLbot can broadcast the update to all connected Discords.  But which channel should it do that in?  Specify the channel name, minus the '#'</p>
+                </div>
+                <div class="col-xs-6">
+                  <label for="defaultonly">Def. Chan. Only</label>
+                  <input id="defaultonly" name="defaultonly" class="char">
+                  <p>Should SLbot ever respond in channels which are NOT the channel specified above?</p>
+                </div>
+                <div class="col-xs-6">
+                  <label for="sendupdatemessages">Send Update Messages</label>
+                  <input id="sendupdatemessages" name="sendupdatemessages" class="char">
+                  <p>Should SLbot broadcast to discord(s) whenever its database has been updated?</p>
+                </div>
+                <div class="col-xs-6">
+                  <label for="serverhealthindicator">Server Health Indicator</label>
+                  <input id="serverhealthindicator" name="serverhealthindicator" class="char">
+                  <p>When enabled, the bot will appear Online/green in Discord for the first 12 hours.  If it does not receive an update, it will become Idle/yellow, and if it still receives no database update after 24 hours, it's state will be come 'do not distrub'/red.</p>
+                </div>
+                <div class="col-xs-6">
+                  <label for="color">Message Color</label>
+                  <input id="color" name="color" class="short">
+                  <p>Hexadecimal color value, the color of SLbot message embed vertical bar in Discord messages</p>
+                </div>
+                <div class="col-xs-6">
+                  <label for="helpcolor">Help Message Color</label>
+                  <input id="helpcolor" name="helpcolor" class="short">
+                  <p>Same as above, only for Help & Error messages.</p>
+                </div>
+                <div class="col-xs-12">
+                  <label for="helpdescription">Help Description</label>
+                  <input id="helpdescription" name="helpdescription">
+                  <p>This appears at the top of the Help command response.</p>
+                </div>
+                <div class="col-xs-6">
+                  <label for="asimovfactor">Easter Egg Scarcity</label>
+                  <input id="asimovfactor" name="asimovfactor" class="short">
+                  <p>The higher the value, the more scarce the easter egg will become.  Set it to 0 and it will happen every time the discord bot server starts.</p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+
+
+        </div> <!--panel group -->
 
       </div>
 
     </div>
 
     <script>
-      // You can also require other files to run in this process
       require('../js/render.js');
+      window.$ = window.jQuery = require('jquery');
+      console.log(process);
     </script>
-    <script>window.$ = window.jQuery = require('jquery');</script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
   </body>
 </html>
