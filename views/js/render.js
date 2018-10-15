@@ -31,14 +31,79 @@ function scrollLog() {
 }
 
 $('#web-switch').on('click', function(e) {
+  updateWebConfig()
   !document.getElementById("web-switch").checked? Web.turnOff() : Web.turnOn()
 })
 
 $('#bot-switch').on('click', function(e) {
+  //updateBotConfig()
   !document.getElementById("bot-switch").checked? Bot.turnOff() : Bot.turnOn()
 })
 
 $('#cron-switch').on('click', function(e) {
+  //updateCronConfig()
   console.log('cron switch')
   //!document.getElementById("cron-switch").checked? Cron.turnOff() : Cron.turnOn()
 })
+
+function updateWebConfig() {
+  var web = {
+    "name": document.getElementById("name").value,
+    "description": document.getElementById("description").value,
+    "url": document.getElementById("url").value,
+    "logo": document.getElementById("logo").value,
+    "tag": document.getElementById("tag").value,
+    "database": document.getElementById("database").value,
+    "backupdatabase": document.getElementById("backupdatabase").value,
+    "jsonsizelimit": document.getElementById("jsonsizelimit").value,
+    "treeview": document.getElementById("treeview").value,
+    "port": document.getElementById("port").value
+  }
+  var fs = require('fs')
+  var config = '../../config.json'
+  var file = require(config)
+  file.web = web
+  fs.writeFile(config, JSON.stringify(file), function (err) {
+    if (err) return ipcRenderer.send('log', err)
+    ipcRenderer.send('log', 'Web config saved')
+    Web.refreshConfig()
+    file = require('../../config.json')
+    console.log(file.web.name)
+  })
+
+}
+
+function updateBotConfig() {
+  var bot = {
+    "prefix": document.getElementById("prefix").value,
+    "defaultchannel": document.getElementById("defaultchannel").value,
+    "defaultonly": document.getElementById("defaultonly").value,
+    "sendupdatemessages": document.getElementById("sendupdatemessages").value,
+    "serverhealthindicator": document.getElementById("serverhealthindicator").value,
+    "color": document.getElementById("color").value,
+    "helpcolor": document.getElementById("helpcolor").value,
+    "helpdescription": document.getElementById("helpdescription").value,
+    "asimovfactor": document.getElementById("asimovfactor").value
+  }
+
+
+}
+
+function updateCronConfig() {
+
+}
+
+function bakeConfig() {
+  var config = require('../../config.json')
+  document.getElementById('name').value = config.web.name
+  document.getElementById('description').value = config.web.description
+  document.getElementById('url').value = config.web.url
+  document.getElementById('logo').value = config.web.logo
+  document.getElementById('tag').value = config.web.tag
+  document.getElementById('database').value = config.web.database
+  document.getElementById('backupdatabase').value = config.web.backupdatabase
+  document.getElementById('jsonsizelimit').value = config.web.jsonsizelimit
+  document.getElementById('treeview').checked = config.web.treeview
+  document.getElementById('port').value = config.web.port
+}
+bakeConfig()

@@ -19,7 +19,7 @@ const helmet = require('helmet')
 var Server = false
 //----------------------------------
 const API = require('./api/db_api.js')
-const Config = require('./config.json')
+var Config = require('./config.json')
 const Logger = require('./logger.js')
 let mainWindow
 //----------------------------------
@@ -180,8 +180,13 @@ function turnOff() {
   Server.close(function() { Logger.log('Web Server STOPPED', t) })
 }
 
+function refreshConfig() {
+  Config = require('../../config.json')
+}
+
 module.exports = {
   turnOn: function() {turnOn() },
   turnOff: function() { turnOff() },
-  isOn: function() { return Server? Server.listening : false }
+  isOn: function() { return Server? Server.listening : false },
+  refreshConfig: function() { refreshConfig() }
 }

@@ -84,12 +84,12 @@
               <div class="panel-body fullwide">
                 <div class="col-xs-4">
                   <label for="width">Width (px)</label>
-                  <input type="number" id="width" name="width" class="short">
+                  <input type="number" id="width" name="width" class="short" min="300" max="2048">
                   <p>Default width of this window in pixels</p>
                 </div>
                 <div class="col-xs-4">
                   <label for="height">Height (px)</label>
-                  <input type="number" id="height" name="height" class="short">
+                  <input type="number" id="height" name="height" class="short" min="300" max="2048">
                   <p>Default height of this window in pixels</p>
                 </div>
               </div>
@@ -132,14 +132,13 @@
                   <p>Number followed by 'mb' to specify megabytes.  Needs to be sufficiently larger than the largest data you recieve.</p>
                 </div>
                 <div class="col-xs-6">
-                <label for="treeview">Enable Treeview&nbsp;
+                <label for="treeview">Enable Treeview</label>
                   <input type="checkbox" id="treeview" name="treeview" class="short">
                   <p>Check this to enable the full-data tree view on the website.  This is process intensive and can freeze some browsers</p>
-                </label>
                 </div>
                 <div class="col-xs-6">
                   <label for="port">Port</label>
-                  <input type="number" id="port" name="port" class="short">
+                  <input type="number" id="port" name="port" class="short" min="10" max="65535">
                   <p>Here you can change the port this app sends and receives data on.</p>
                 </div>
                 <div class="col-xs-12">
@@ -174,7 +173,7 @@
               <div class="panel-body fullwide">
                 <div class="col-xs-6">
                   <label for="prefix">Command Prefix</label>
-                  <input id="prefix" name="prefix" class="char">
+                  <input id="prefix" name="prefix" class="char" maxlength="1">
                   <p>This is a single-character that will be used in Discord at the beginning of each command.  Common values are '!' or '?'</p>
                 </div>
                 <div class="col-xs-6">
@@ -184,27 +183,27 @@
                 </div>
                 <div class="col-xs-6">
                   <label for="defaultonly">Def. Chan. Only</label>
-                  <input id="defaultonly" name="defaultonly" class="char">
+                  <input id="defaultonly" type="checkbox" name="defaultonly">
                   <p>Should SLbot ever respond in channels which are NOT the channel specified above?</p>
                 </div>
                 <div class="col-xs-6">
                   <label for="sendupdatemessages">Send Update Messages</label>
-                  <input id="sendupdatemessages" name="sendupdatemessages" class="char">
+                  <input id="sendupdatemessages" type="checkbox" name="sendupdatemessages">
                   <p>Should SLbot broadcast to discord(s) whenever its database has been updated?</p>
                 </div>
                 <div class="col-xs-6">
                   <label for="serverhealthindicator">Server Health Indicator</label>
-                  <input id="serverhealthindicator" name="serverhealthindicator" class="char">
+                  <input id="serverhealthindicator" type="checkbox" name="serverhealthindicator" class="char">
                   <p>When enabled, the bot will appear Online/green in Discord for the first 12 hours.  If it does not receive an update, it will become Idle/yellow, and if it still receives no database update after 24 hours, it's state will be come 'do not distrub'/red.</p>
                 </div>
                 <div class="col-xs-6">
                   <label for="color">Message Color</label>
-                  <input id="color" name="color" class="short">
+                  <input id="color" name="color" class="short" maxlength="7" minlength="4">
                   <p>Hexadecimal color value, the color of SLbot message embed vertical bar in Discord messages</p>
                 </div>
                 <div class="col-xs-6">
                   <label for="helpcolor">Help Message Color</label>
-                  <input id="helpcolor" name="helpcolor" class="short">
+                  <input id="helpcolor" name="helpcolor" class="short" maxlength="7" minlength="4">
                   <p>Same as above, only for Help & Error messages.</p>
                 </div>
                 <div class="col-xs-12">
@@ -214,7 +213,7 @@
                 </div>
                 <div class="col-xs-6">
                   <label for="asimovfactor">Easter Egg Scarcity</label>
-                  <input id="asimovfactor" name="asimovfactor" class="short">
+                  <input id="asimovfactor" type="number" name="asimovfactor" class="short" min="0" max="999999999999">
                   <p>The higher the value, the more scarce the easter egg will become.  Set it to 0 and it will happen every time the discord bot server starts.</p>
                 </div>
               </div>

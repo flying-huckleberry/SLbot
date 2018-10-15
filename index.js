@@ -15,7 +15,7 @@ const {app, BrowserWindow, ipcMain} = require('electron')
 //const Bot = require('./bot.js')
 //const Server = require('./server.js')
 //const Logger = require('./logger.js')
-const Config = require('./config.json')
+//const Config = require('./config.json')
 
 let mainWindow
 //----------------------------------

@@ -530,10 +530,14 @@ function turnOff() {
   })
 }
 
+function refreshConfig() {
+  Config = require('../../config.json')
+}
 
 module.exports = {
   isOn:           function() { return Bot? true : false },
   turnOn:         function() { turnOn() },
   turnOff:        function() { turnOff() },
-  announceUpdate: function(name) { return announceUpdate(name) }
+  announceUpdate: function(name) { return announceUpdate(name) },
+  refreshConfig: function() { refreshConfig() }
 }
