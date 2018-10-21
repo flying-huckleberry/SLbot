@@ -495,6 +495,9 @@ function commandInfo(msg) {
   announceUpdate
   when a node sends a stats update, send to the appr. channels
 _________________________________________________________________*/
+//TODO: edit pinned message
+//first time for this server on this channel? send a message, pin it, save message ID
+//else? get saved [message id] for this [server id][channel id], edit message with recent date
 function announceUpdate(name) {
   let embed = new Discord.RichEmbed()
     .setTitle('Database Refreshed')
@@ -512,6 +515,9 @@ function announceUpdate(name) {
   }
   lastUpdate = new Date()
 }
+
+//TODO: Announce a special update (standalone message)
+// like, for a certain mission which was run, and SLmod saved its stats individually... if thats a thing...
 
 
 function turnOn() {
