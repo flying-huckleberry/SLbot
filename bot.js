@@ -519,7 +519,6 @@ function announceUpdate(name) {
 //TODO: Announce a special update (standalone message)
 // like, for a certain mission which was run, and SLmod saved its stats individually... if thats a thing...
 
-
 function turnOn() {
   //make the bot come online in discord
   Logger.log('Bot Server starting...', i)
