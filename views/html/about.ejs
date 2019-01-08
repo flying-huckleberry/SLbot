@@ -9,36 +9,65 @@
         <% include ../partials/header %>
     </header>
 
-    <main>
+    <main style="font-size:1.3em">
 
       <div class="row">
         <div class="col-md-10 col-md-offset-1">
           <div class="jumbotron  jumbotron-fluid">
             <h1 class="blackops larger">TL;DR</h1>
             <ol class="lead">
-              <li><span style="font-weight:bold">SLmod</span> generates DCS player statistics,</li>
-              <li><span style="font-weight:bold">SLSC</span> checks for new statistics every so often & uploads to</li>
-              <li><span style="font-weight:bold">S3</span>, where you can view it online.</li>
+              <li><a href="#web-server" style="font-weight:bold">Web Server</a> stores database, hosts API & website</li>
+              <li><a href="#discord-bot-server" style="font-weight:bold">Discord Bot Server</a> provides API access through commands</li>
+              <li><a href="#slmod-cron" style="font-weight:bold">SLmod Cron</a> sends game data to API</li>
+              <li>Open source <a href="#open-source-licensing" style="font-weight:bold">MIT</a> licensed</li>
             </ol>
           </div>
         </div>
       </div>
 
 
-      <div class="row">
+      <div class="row" id="web-server">
         <div class="col-md-10 col-md-offset-1">
             <div class="row">
                 <div class="col-md-8"><div class="container"></div><div class="row"></div>
-                     <h4><strong><a href="#">S3</a></strong></h4>
+                     <h4><strong><a href="#">Web Server</a></strong></h4>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-4 col-xs-6">
-                <img src="https://i58.servimg.com/u/f58/19/53/72/50/close_10.jpg" alt="" class="img-responsive">
+                <img src="/assets/img/web-server.jpg" alt="" class="img-responsive">
                 </div>
                 <div class="col-md-8">
-                  <p>SLmod Statistics Server (S3) is a JSON Database API and frontend web interface that utilizes players' in-game statistics, saved via Speed's Lua Mod (SLmod).</p>
-                  <p><a class="btn btn-primary" href="https://github.com/Bango1999/S3">S3 on GitHub</a>
+                  <p>
+                    Provides an API to the JSON database, which can store player-based gameplay statistics for various DCS servers with SLmod enabled. It also hosts a front-end interface to the web server that you can access from a browser.  That's what you're looking at right now.
+                  </p>
+                  <p>
+                    <a class="btn btn-primary" href="/">Web UI</a>
+                    <a class="btn btn-primary" href="/api">API Routes</a>
+                  </p>
+                </div>
+            </div>
+        </div>
+      </div>
+      <hr>
+
+      <div class="row" id="discord-bot-server">
+        <div class="col-md-10 col-md-offset-1">
+            <div class="row">
+                <div class="col-md-8"><div class="container"></div><div class="row"></div>
+                     <h4><strong><a href="#">Discord Bot Server</a></strong></h4>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-xs-6">
+                <img src="/assets/img/discord-bot.jpg" alt="" class="img-responsive">
+                </div>
+                <div class="col-md-8">
+                  <p>
+                    Provides access to the API through Discord commands. The bot can be active on multiple Discord servers at the same time.  It can also notify the Discord server(s) when there is a statistics update.
+                  </p>
+                  <p>
+                    <a class="btn btn-primary" href="/command">Discord Commands</a>
                   </p>
                 </div>
             </div>
@@ -47,23 +76,24 @@
       <hr>
 
 
-      <div class="row">
+      <div class="row" id="slmod-cron">
         <div class="col-md-10 col-md-offset-1">
             <div class="row">
                 <div class="col-md-8"><div class="container"></div><div class="row"></div>
-                     <h4><strong><a href="#">SLSC</a></strong></h4>
+                     <h4><strong><a href="#">SLmod Cron</a></strong></h4>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-4 col-xs-6">
-                <img src="https://i58.servimg.com/u/f58/19/53/72/50/stagge11.jpg" alt="" class="img-responsive">
+                <img src="/assets/img/slmod-cron.jpg" alt="" class="img-responsive">
 
                 </div>
                 <div class="col-md-8">
-                    <p>S3 is not the only service that needs to be run for a fully-functioning system.</p>
-                    <p>Multiple DCS game servers can upload their statistical data to S3 via an API.  Each DCS game server you host which runs SLmod will also be required to run a small node.js cron service alongside it, called Slmod Statistics Crontask (SLSC)</p>
                     <p>
-                      <a class="btn btn-primary" href="https://github.com/Bango1999/SLSC">SLSC on Github</a>&nbsp;&nbsp;<a class="btn btn-primary" href="https://github.com/mrSkortch/DCS-SLmod/tree/develop">SLmod on Github</a>
+                      When run alongside SLmod-enabled DCS game servers, the cron task will periodically check if the statistics have changed, and send the data to the API.
+                    </p>
+                    <p>
+                      <a class="btn btn-primary" href="https://github.com/mrSkortch/DCS-SLmod/tree/develop">SLmod on Github</a>
                     </p>
                 </div>
             </div>
@@ -71,7 +101,7 @@
       </div>
       <hr>
 
-      <div class="row">
+      <div class="row" id="open-source-licensing">
         <div class="col-md-10 col-md-offset-1">
             <div class="row">
                 <div class="col-md-8"><div class="container"></div><div class="row"></div>
@@ -80,7 +110,7 @@
             </div>
             <div class="row">
                 <div class="col-md-4 col-xs-6">
-                <img src="https://i58.servimg.com/u/f58/19/53/72/50/hucks_11.jpg" alt="" class="img-responsive">
+                <img src="/assets/img/open-source.jpg" alt="" class="img-responsive">
 
                 </div>
                 <div class="col-md-8">

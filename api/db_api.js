@@ -10,6 +10,7 @@
     By Huckleberry
 ______________________________________________________*/
 const jsondb = require('node-json-db');
+const fs = require('fs');
 
 const CONFIG = require('../config.json');
 const TYPES = require('../registry/types.json');
@@ -665,6 +666,25 @@ _________________________________________________________________*/
 function getTypes() {
   return TYPES;
 }
+//--------------------------------
+module.exports = {
+  update: function(json) { return update(json) },
+  getFullStats: function() { return getFullStats() },
+  getServers: function() { return getServers() },
+  getHours: function(input) { return getHours(input) },
+  getKills: function(input) { return getKills(input) },
+  getDeaths: function(input) { return getDeaths(input) },
+  getTypes: function() { return getTypes() }
+};
+/*
+  getDBSize
+  returns types for building the web command form
+_________________________________________________________________*/
+function getDBSize() {
+  const stats = fs.statSync(DB+'.json')
+  return stats.size / 1000000.0 //filesize in mb
+}
+
 //--------------------------------
 module.exports = {
   update: function(json) { return update(json) },

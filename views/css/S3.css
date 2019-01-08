@@ -5,7 +5,14 @@ main {font-family: 'Slabo 27px', serif;}
 .clear {clear:both;}
 .table-links a:hover {cursor: pointer;}
 .well h2 {text-align:center;margin-top:0;}
-.server-name {font-family: 'Boogaloo', sans-serif; font-size:2.5em;color:#333;}
+.server-name {
+  font-family: 'Boogaloo', sans-serif;
+  /* font-family: 'Croissant One', cursive; */
+  /* font-family: 'Fontdiner Swanky', cursive; */
+  /* font-family: 'Ranchers', cursive; */
+  /* font-family: 'Black Ops One', cursive; */
+  /* font-family: 'Plaster', cursive; */
+  font-size:2.5em;color:#333;}
 .tree-view {margin-top: 70px;}
 .loading-text { font-family: 'Open Sans', sans-serif; }
 .center {text-align:center}
@@ -21,7 +28,12 @@ main {font-family: 'Slabo 27px', serif;}
   font-size: 1em;
 }
 .blackops {
-  font-family: 'Black Ops One', cursive;
+  font-family: 'Boogaloo', sans-serif;
+  /* font-family: 'Croissant One', cursive; */
+  /* font-family: 'Fontdiner Swanky', cursive; */
+  /* font-family: 'Ranchers', cursive; */
+  /* font-family: 'Black Ops One', cursive; */
+  /* font-family: 'Plaster', cursive; */
   font-size: 2em;
   float: none;
 }

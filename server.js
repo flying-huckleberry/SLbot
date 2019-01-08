@@ -144,6 +144,17 @@ Web.post('/api/dcs/slmod/update', (request, response) => {
     if (Config.bot.sendupdatemessages) {
       ipcRenderer.send('relay-update', request.body.name)
     }
+    let size = API.getDBSize()
+    let limit = parseFloat(Config.web.jsonsizelimit.replace('mb',''))
+    Logger.log(size, e);
+    Logger.log(
+      //16.6
+      //16.7
+      (limit-16.6 < size)
+        ? 'Warning: Database is '+parseFloat(limit-size)+' MB away from exceeding the '
+        +Config.web.jsonsizelimit+' threshold.  Consider increasing the "JSON Max Size" value in Web Server Config and restarting the Web Server.'
+        : 'Warning: Delete me, JSON is within limits.'
+      , e);
   }
 })
 

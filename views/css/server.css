@@ -30,7 +30,16 @@ body.darkbod {
 .ib {
   display:inline-block;
   padding: 5px;
-  margin: 5px auto;
+  margin: 5px;
+}
+
+.vert-left {
+  border-left: 1px solid #484641;
+  padding-left: 20px;
+}
+
+.fl {
+  float: left;
 }
 
 .panel-heading {
@@ -96,6 +105,21 @@ input:checked + .slider:before {
   -ms-transform: translateX(26px);
   transform: translateX(26px);
   background-color: #d3d2c0;
+}
+
+.btn-themed {
+  background-color: #484641;
+  color: #9A9892 !important;
+}
+
+.btn-themed:hover {
+  background-color: #484641;
+  color: #d3d2c0 !important;
+}
+
+.btn-themed:active {
+  background-color: #2E2C29;
+  color: #d3d2c0 !important;
 }
 
 .slider.round {

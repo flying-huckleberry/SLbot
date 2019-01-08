@@ -30,26 +30,32 @@
 
             <div id="Module_Switch_accordion" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="Module_Switch_heading">
               <div class="panel-body">
-                  <div class="ib">
+                  <div class="ib fl">
                     <label>Web Server</label><br>
                     <label class="switch" for="web-switch">
                       <input type="checkbox" id="web-switch" name="web-switch">
                       <span class="slider round"></span>
                     </label>
                   </div>
-                  <div class="ib">
-                    <label>Discord Bot</label><br>
+                  <div class="ib fl">
+                    <label>Bot Server</label><br>
                     <label class="switch" for="bot-switch">
                       <input type="checkbox" id="bot-switch" name="bot-switch">
                       <span class="slider round"></span>
                     </label>
                   </div>
-                  <div class="ib">
+                  <div class="ib fl">
                     <label>DCS Server</label><br>
                     <label class="switch" for="cron-switch">
                       <input type="checkbox" id="cron-switch" name="cron-switch">
                       <span class="slider round"></span>
                     </label>
+                  </div>
+                  <div class="ib fl">
+                    <div id="send-stats" class="vert-left">
+                      <label>SLmod Stats</label><br>
+                      <button id="send-now" class="btn btn-themed">Send Once</button>
+                    </div>
                   </div>
               </div>
             </div>

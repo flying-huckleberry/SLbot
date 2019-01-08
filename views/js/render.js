@@ -1,5 +1,7 @@
 const Web = require('../../server.js')
 const Bot = require('../../bot.js')
+//const Cron = require('../../cron.js')
+
 const {ipcRenderer} = require('electron')
 window.$ = window.jQuery = require('jquery')
 
@@ -44,6 +46,23 @@ $('#cron-switch').on('click', function(e) {
   //updateCronConfig()
   console.log('cron switch')
   //!document.getElementById("cron-switch").checked? Cron.turnOff() : Cron.turnOn()
+
+  !document.getElementById("cron-switch").checked? hideSendBtn() : showSendBtn()
+})
+
+function showSendBtn() {
+  console.log("show")
+  document.getElementById("send-stats").style.display ="block"
+}
+
+function hideSendBtn() {
+  console.log("hide")
+  document.getElementById("send-stats").style.display = "none"
+}
+hideSendBtn()
+
+document.getElementById("send-now").addEventListener("click", function() {
+  console.log('click')
 })
 
 function updateWebConfig() {

@@ -276,9 +276,11 @@ $(document).ready(function() {
     ];
     var usach = [ //us aircraft hours
       'A-10C',
+      'AV8BNA',
       'F-15C',
       'F-5E-3',
       'F-86F Sabre',
+      'FA-18C_hornet',
       'P-51D'
     ];
     var ruach = [ //ru aircraft hours
@@ -289,11 +291,14 @@ $(document).ready(function() {
       'MiG-29S',
       'Su-25',
       'Su-25T',
-      'Su-27'
+      'Su-27',
+      'Yak-52'
     ];
     var oach = [ //other aircraft hours
       'AJS37',
       'Bf-109K-4',
+      'C-101CC',
+      'C-101EB',
       'FW-190D9',
       'L-39C',
       'L-39ZA',
