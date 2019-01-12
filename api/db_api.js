@@ -693,5 +693,6 @@ module.exports = {
   getHours: function(input) { return getHours(input) },
   getKills: function(input) { return getKills(input) },
   getDeaths: function(input) { return getDeaths(input) },
-  getTypes: function() { return getTypes() }
+  getTypes: function() { return getTypes() },
+  getDBSize: function() { return getDBSize() }
 };
