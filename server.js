@@ -4,7 +4,6 @@
 
     Serves SLbot Web Server & API
     SLbot website can be accessed from a browser
-      (your IP/domain) (remember to port forward 80:4000)
     SLbot functions can be accessed from an API request
       (your IP/domain) (remember to port forward 80:4000)
 
@@ -12,6 +11,7 @@
 ______________________________________________________*/
 const Express = require('express')
 const Path = require('path')
+const fs = require('fs');
 const BodyParser = require('body-parser')
 const {ipcRenderer, BrowserWindow} = require('electron')
 const Web = Express()
@@ -135,6 +135,7 @@ Web.post('/api/types', (request, response) => {
 Web.post('/api/dcs/slmod/update', (request, response) => {
   let str = 'POST /api/dcs/slmod/update from '+request.body.name
   Logger.log(str,i)
+  console.log(request.body.stats)
   var error = API.update(request.body) //update the stats and server info
   if (error) {
     response.end('fail')
@@ -144,17 +145,7 @@ Web.post('/api/dcs/slmod/update', (request, response) => {
     if (Config.bot.sendupdatemessages) {
       ipcRenderer.send('relay-update', request.body.name)
     }
-    let size = API.getDBSize()
-    let limit = parseFloat(Config.web.jsonsizelimit.replace('mb',''))
-    Logger.log(size, e);
-    Logger.log(
-      //16.6
-      //16.7
-      (limit-16.6 < size)
-        ? 'Warning: Database is '+parseFloat(limit-size)+' MB away from exceeding the '
-        +Config.web.jsonsizelimit+' threshold.  Consider increasing the "JSON Max Size" value in Web Server Config and restarting the Web Server.'
-        : 'Warning: Delete me, JSON is within limits.'
-      , e);
+    checkSize() //alert if dataset encroaching on max size
   }
 })
 
@@ -175,6 +166,17 @@ function sanitizeCmd(input) {
   }
 }
 
+function checkSize() {
+  let size = API.getDBSize()
+  let limit = parseFloat(Config.web.jsonsizelimit.replace('mb',''))
+  Logger.log(
+    (limit-3 < size)
+      ? 'Warning: Database is '+parseFloat(limit-size)+' mb away from exceeding the '
+      +Config.web.jsonsizelimit+' threshold.  Consider increasing the "JSON Max Size" value in Web Server Config and restarting the Web Server.'
+      : 'Warning: Delete me, JSON is within limits.'
+    , e);
+}
+
 /*
   Module Export functions
   allows control of web server life cycle from main process
@@ -192,12 +194,22 @@ function turnOff() {
 }
 
 function refreshConfig() {
-  Config = require('../../config.json')
+  Config = require('./config.json')
+}
+
+function clearCache() {
+  API.clearCache();
+}
+
+function updateAircraft() {
+  API.updateAircraft();
 }
 
 module.exports = {
   turnOn: function() {turnOn() },
   turnOff: function() { turnOff() },
   isOn: function() { return Server? Server.listening : false },
-  refreshConfig: function() { refreshConfig() }
+  refreshConfig: function() { refreshConfig() },
+  clearCache: function() { clearCache() },
+  updateAircraft: function() { updateAircraft() }
 }

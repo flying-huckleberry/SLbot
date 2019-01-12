@@ -1,5 +1,5 @@
 $(document).ready(function() {
-  var types = {'hours':{},'kills':{}};
+  var types = {'aircraft':[],'kill':[]};
   var servers = {};
   //get types object
   $.ajax({
@@ -55,7 +55,7 @@ $(document).ready(function() {
       //select aircraft type
       //$("#arg2").remove();
       $("#arg2").replaceWith('<select id="arg2" name="arg2" class="form-control"></select>');
-      types.hours.forEach(function(v) {
+      types.aircraft.forEach(function(v) {
         v = v.replace(/[\s+]/gi, '');
         $("#arg2").append('<option value="'+v+'">'+v+'</option>');
       });
@@ -77,7 +77,7 @@ $(document).ready(function() {
       //select kill type
       //$("#arg2").remove();
       $("#arg2").replaceWith('<select id="arg2" name="arg2" class="form-control"></select>');
-      types.kills.forEach(function(v) {
+      types.kill.forEach(function(v) {
         v = v.replace(/[\s+]/gi, '');
         $("#arg2").append('<option value="'+v+'">'+v+'</option>');
       });

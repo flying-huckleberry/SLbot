@@ -28,8 +28,27 @@ const ERROR = 'ERROR';
 const DB = 'api/db/' + CONFIG.web.database;
 const BDB = 'api/db/' + CONFIG.web.backupdatabase;
 
+var airTypes = [];
+var killTypes = [];
 var cleanAirTypes = [];
 var cleanKillTypes = [];
+
+// function addDebugDB() {
+//   var db = new jsondb(DB, true, true);
+//   try { var caucas = db.getData('/server/caucas') }
+//   catch(err) { return 'add debug db fail' }
+//   db.push('/server/debug',caucas);
+// }
+// addDebugDB();
+
+// function deleteDebugDB() {
+//   var db = new jsondb(DB, true, true);
+//   try { var server = db.getData('/server') }
+//   catch(err) { return 'delete debug db fail' }
+//   delete server['debug'];
+//   db.push('/server',server);
+// }
+// deleteDebugDB();
 
 //-------------------------------------
 // HELPER FUNCTIONS
@@ -45,20 +64,36 @@ _________________________________________________________________*/
 //   db.push('/name_hash', json);
 // }
 
-
+//make types local, changeable registry profile
+function makeTypes() {
+  let fdb = new jsondb(DB, true, true);
+  let types = false;
+  try { types = fdb.getData('/type') }
+  catch(err) {
+    return LOGGER.log('makeTypes request for types, but no data is available.',i);
+  }
+  if (types['aircraft'] && types['kill']) {
+    airTypes = types['aircraft'];
+    killTypes = types['kill'];
+    return false;
+  } else {
+    return LOGGER.log('makeTypes thinks aircraft or kill types is empty',i);
+  }
+}
+makeTypes(); //do it now
 
 /*
   cleanTypes
   sanitize TYPE arrays defined above
 _________________________________________________________________*/
 function cleanTypes() {
-  for (var idx = 0; idx < TYPES.hours.length; idx++) {
-    cleanAirTypes[idx] = TYPES.hours[idx]
+  for (var idx = 0; idx < airTypes.length; idx++) {
+    cleanAirTypes[idx] = airTypes[idx]
                       .toLowerCase()
                       .replace(/[^\w]/gi, '');
   }
-  for (var idx = 0; idx < TYPES.kills.length; idx++) {
-    cleanKillTypes[idx] = TYPES.kills[idx]
+  for (var idx = 0; idx < killTypes.length; idx++) {
+    cleanKillTypes[idx] = killTypes[idx]
                       .toLowerCase()
                       .replace(/[^\w]/gi, '');
   }
@@ -73,9 +108,56 @@ function updateTokens() {
   db.push('/token',TOKENS['SLSC']);
 }
 updateTokens(); //do it now
+
+
+function poop() {
+  LOGGER.log('poop',e)
+  var db = new jsondb(DB, true, true);
+  var thing = db.getData('/server/caucas');
+  console.log(thing);
+  var sv = new jsondb('api/db/poop', true, true);
+  sv.push('/',thing);
+
+}
+poop();
+
 /*
-  updateTokens
-  update tokens in the db with whats in the config
+  updateAircraft
+  updates a working list of aircraft available based on dataset
+_________________________________________________________________*/
+function updateAircraft() {
+  var db = new jsondb(DB, true, true);
+  try { var server = db.getData('/server') }
+  catch(err) {
+    LOGGER.log('ERROR: Trying to sync aircraft list, but no data is available.',e);
+    return 'ERROR: NO Database '+DB+'/server'; //return the error
+  }
+  let newAc = [];
+  //server,id,stats,number,times,aircraft
+  Object.keys(server).forEach(function(serverId) { //for each server
+    Object.keys(server[serverId]['stats']).forEach(function(playerId) { //for each player
+      if (server[serverId]['stats'][playerId]['times']) {
+        Object.keys(server[serverId]['stats'][playerId]['times']).forEach(function(aircraftId) { //for each module
+          if (!airTypes.includes(aircraftId)) {
+            LOGGER.log('Found new aircraft: '+aircraftId,e);
+            newAc.push(aircraftId);
+            airTypes.push(aircraftId); //push to local ac array
+            db.push('/type/aircraft', airTypes); //push to db aircraft types
+            db.push('/whitelist/aircraft/'+aircraftId, 1); //push to db aircraft whitelist
+          }
+        })
+      }//if not null
+    })
+  });
+  if (newAc.length == 0) {
+    LOGGER.log('No new aircraft found');
+  }
+  return newAc;
+}
+
+/*
+  sanitize
+  remove uppercase and special chars
 _________________________________________________________________*/
 function sanitize(data) {
   return data.toLowerCase().replace(/[^\w\s\ ]/gi, '');
@@ -105,7 +187,7 @@ function matchAirTypes(needle) {
   for (var k in cleanAirTypes) {
     if (cleanAirTypes[k].includes(needle)) {
       //console.log('found '+needle+' in '+cleanAircraftypes[k]);
-      typeMatches.push(TYPES.hours[k]);
+      typeMatches.push(airTypes[k]);
     }
   }
   return typeMatches;
@@ -120,7 +202,7 @@ function matchKillTypes(needle) {
   for (var k in cleanKillTypes) {
     if (cleanKillTypes[k].includes(needle)) {
       //console.log('found '+needle+' in '+cleanKillTypes[k]);
-      typeMatches.push(TYPES.kills[k]);
+      typeMatches.push(killTypes[k]);
     }
   }
   return typeMatches;
@@ -134,9 +216,20 @@ function apiErr(mg, err = false) {
   if (err) { LOGGER.log(err,e) }
   return {'ERROR':mg };
 }
+
+function clearCache() {
+  let db = new jsondb('./api/db/hash.json', true, true);
+  try { var hash = db.getData('/hash') }
+  catch(err) {
+    return apiErr('API request for hash, but no data is available.', err);
+  }
+  db.push('/hash','');
+  LOGGER.log('Cache cleared',i);
+
+}
 /*
-  updateTokens
-  update tokens in the db with whats in the config
+  deTokenize
+  remove the id and token before sending to client
 _________________________________________________________________*/
 //helper function deTokenize:
 //sanitize revealing metadata (id/token pair) from each server object
@@ -501,6 +594,7 @@ function singleDeaths(CMD, server = false) {
   updates the databases with new stats
 _________________________________________________________________*/
 function update(json) {
+  console.log(json)
   var serverId = authorizeToken(json['id'], json['token']);
   if (serverId === false) { return 'Invalid Token, Aborting DB Update' }
   else { LOGGER.log('Token is valid for ID: ' + serverId, i) }
@@ -521,6 +615,7 @@ function update(json) {
       //Deleting data
       //db.delete("/info");
 }
+
 /*
   getFullStats
   returns the entire server json  currently stored in the main db
@@ -664,18 +759,21 @@ function getDeaths(CMD) {
   returns types for building the web command form
 _________________________________________________________________*/
 function getTypes() {
-  return TYPES;
+  return {"aircraft" : airTypes, "kill": killTypes};
 }
-//--------------------------------
-module.exports = {
-  update: function(json) { return update(json) },
-  getFullStats: function() { return getFullStats() },
-  getServers: function() { return getServers() },
-  getHours: function(input) { return getHours(input) },
-  getKills: function(input) { return getKills(input) },
-  getDeaths: function(input) { return getDeaths(input) },
-  getTypes: function() { return getTypes() }
-};
+/*
+  getWhitelist
+  returns types for building the web command form
+_________________________________________________________________*/
+function getWhitelist() {
+  var fdb = new jsondb(DB, true, true);
+  try { var whitelist = fdb.getData('/whitelist') }
+  catch(err) {
+    LOGGER.log('ERROR: Trying to get whitelist, but no data is available.',e);
+    return 'ERROR: NO Database '+DB+'/whitelist'; //return the error
+  }
+  return whitelist;
+}
 /*
   getDBSize
   returns types for building the web command form
@@ -694,5 +792,7 @@ module.exports = {
   getKills: function(input) { return getKills(input) },
   getDeaths: function(input) { return getDeaths(input) },
   getTypes: function() { return getTypes() },
-  getDBSize: function() { return getDBSize() }
+  getDBSize: function() { return getDBSize() },
+  clearCache: function() { return clearCache() },
+  updateAircraft: function() { return updateAircraft() }
 };

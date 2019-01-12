@@ -6,7 +6,7 @@ const {ipcRenderer} = require('electron')
 window.$ = window.jQuery = require('jquery')
 
 ipcRenderer.on('log', function(event , data) {
-  let limit = 4196*2*2
+  let limit = 16784 // 4196*2*2
   document.getElementById('log').innerHTML += (data+"<br/>")
   if (document.getElementById('log').innerHTML.length > limit) {
     document.getElementById('log').innerHTML =
@@ -50,20 +50,29 @@ $('#cron-switch').on('click', function(e) {
   !document.getElementById("cron-switch").checked? hideSendBtn() : showSendBtn()
 })
 
+$('#clear-cache').on('click', function(e) {
+  console.log('cache clear')
+  Web.clearCache()
+})
+
+$('#send-now').on('click', function() {
+  console.log('click')
+})
+
+$('#update-aircraft').on('click', function() {
+  console.log('update')
+  Web.updateAircraft()
+})
+
 function showSendBtn() {
   console.log("show")
   document.getElementById("send-stats").style.display ="block"
 }
 
 function hideSendBtn() {
-  console.log("hide")
   document.getElementById("send-stats").style.display = "none"
 }
 hideSendBtn()
-
-document.getElementById("send-now").addEventListener("click", function() {
-  console.log('click')
-})
 
 function updateWebConfig() {
   var web = {
