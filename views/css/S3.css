@@ -16,6 +16,8 @@ main {font-family: 'Slabo 27px', serif;}
 .tree-view {margin-top: 70px;}
 .loading-text { font-family: 'Open Sans', sans-serif; }
 .center {text-align:center}
+.ib {display:inline-block !important}
+.navbar-header { cursor:crosshair;-webkit-touch-callout: none;-webkit-user-select: none;-khtml-user-select: none;-moz-user-select: none;-ms-user-select: none;user-select: none }
 .navbar-brand { padding: 11px 15px; }
 #loading-icon {
   background-color: #f5f5f5;

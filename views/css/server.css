@@ -53,17 +53,9 @@ body.darkbod {
   height: 34px;
 }
 
- .fullwide input.char {
-  width: 30px;
-}
-
-.fullwide input.short {
-  width: 50px;
-}
-
-.fullwide input {
-  width: 100%;
-}
+.form-group input,
+.form-group textarea { display:inline-block; }
+.form-group label { display:inline-block;cursor:help }
 
 
 .switch input {display:none;}

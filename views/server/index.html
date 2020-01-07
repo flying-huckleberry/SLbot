@@ -2,6 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SLbot Server Control Panel</title>
     <link rel="stylesheet" href="../css/server.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Black+Ops+One|Archivo+Black|Slabo+27px|Open+Sans|Boogaloo">
@@ -82,9 +83,30 @@
               <h4 class="panel-title">Log Messages</h4>
             </div>
 
-            <div id="Log_accordion" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="Log_heading">
+            <div id="Log_accordion" class="panel-collapse collapse" role="tabpanel" aria-labelledby="Log_heading">
               <div class="panel-body">
                 <div id="log"></div>
+              </div>
+            </div>
+
+          </div>
+
+
+
+          <div class="panel panel-default">
+
+            <div class="panel-heading" data-toggle="collapse" data-target="#Aircraft_whitelist_accordion" role="tab" id="Aircraft_whitelist_heading">
+              <h4 class="panel-title">Aircraft Whitelist</h4>
+            </div>
+
+            <div id="Aircraft_whitelist_accordion" class="panel-collapse collapse" role="tabpanel" aria-labelledby="Aircraft_whitelist_heading">
+              <div class="panel-body">
+                <div class="form-group col-xs-12 col-md-6" data-toggle="popover" data-trigger="focus"
+                    data-placement="bottom"
+                    title="Aircraft Whitelist"
+                    data-content="Controls the Aircraft that show up in the web view">
+                  <h1>WHitelist HEre</h1>
+                </div>
               </div>
             </div>
 
@@ -98,17 +120,25 @@
               <h4 class="panel-title">App Config</h4>
             </div>
 
-            <div id="App_Config_accordion" class="panel-collapse collapse" role="tabpanel" aria-labelledby="App_Config_heading">
-              <div class="panel-body fullwide">
-                <div class="col-xs-4">
-                  <label for="width">Width (px)</label>
-                  <input type="number" id="width" name="width" class="short" min="300" max="2048">
-                  <p>Default width of this window in pixels</p>
+            <div id="App_Config_accordion" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="App_Config_heading">
+              <div class="panel-body">
+                <div class="form-group col-xs-12 col-md-6" data-toggle="popover" data-trigger="focus"
+                    data-placement="bottom"
+                    title="Window Width"
+                    data-content="Default width of this window in pixels">
+                  <label for="width" class="col-xs-12 col-sm-6 col-md-4">Width (px)</label>
+                  <div class="col-xs-12 col-sm-6 col-md-8">
+                    <input type="number" id="width" name="width" class="form-control col-xs-6 col-md-8" min="300" max="2048" class="form-control" placeholder="1000">
+                  </div>
                 </div>
-                <div class="col-xs-4">
-                  <label for="height">Height (px)</label>
-                  <input type="number" id="height" name="height" class="short" min="300" max="2048">
-                  <p>Default height of this window in pixels</p>
+                <div class="form-group col-xs-12 col-md-6" data-toggle="popover" data-trigger="focus"
+                    data-placement="bottom"
+                    title="Window Height"
+                    data-content="Default height of this window in pixels">
+                  <label for="height" class="col-xs-12 col-sm-6 col-md-4">Height (px)</label>
+                  <div class="col-xs-12 col-sm-6 col-md-8">
+                    <input type="number" id="height" name="height" class="form-control col-xs-6 col-md-8" min="300" max="2048" class="form-control" placeholder="600">
+                  </div>
                 </div>
               </div>
             </div>
@@ -123,57 +153,99 @@
             </div>
 
             <div id="Web_Config_accordion" class="panel-collapse collapse" role="tabpanel" aria-labelledby="Web_Config_heading">
-              <div class="panel-body fullwide">
-                <div class="col-xs-6">
-                  <label for="name">Name</label>
-                  <input id="name" name="name">
-                  <p>Name is used in the website heading, and various other places.</p>
-                </div>
-                <div class="col-xs-6">
-                  <label for="tag">Name Filter</label>
-                  <input id="tag" name="tag" class="short">
-                  <p>Players that have changed their names may have more than 1 name in their list of names.  Here you can enter a filter, if your unit has a standardized nametag it will be matched by this value</p>
-                </div>
-                <div class="col-xs-6">
-                  <label for="database">Database Name</label>
-                  <input id="database" name="database" class="short">
-                  <p>No spaces.  Name your master JSON file that holds all your SLmod servers' data</p>
-                </div>
-                <div class="col-xs-6">
-                  <label for="backupdatabase">Backup DB Name</label>
-                  <input id="backupdatabase" name="backupdatabase" class="short">
-                  <p>No spaces.  Name your backup JSON file that holds all your SLmod servers' data</p>
-                </div>
-                <div class="col-xs-6">
-                  <label for="jsonsizelimit">JSON Max Size</label>
-                  <input id="jsonsizelimit" name="jsonsizelimit" class="short">
-                  <p>Number followed by 'mb' to specify megabytes.  Needs to be sufficiently larger than the largest data you recieve.</p>
-                </div>
-                <div class="col-xs-6">
-                <label for="treeview">Enable Treeview</label>
-                  <input type="checkbox" id="treeview" name="treeview" class="short">
-                  <p>Check this to enable the full-data tree view on the website.  This is process intensive and can freeze some browsers</p>
-                </div>
-                <div class="col-xs-6">
-                  <label for="port">Port</label>
-                  <input type="number" id="port" name="port" class="short" min="10" max="65535">
-                  <p>Here you can change the port this app sends and receives data on.</p>
-                </div>
-                <div class="col-xs-12">
-                  <label for="description">Description</label>
-                  <input id="description" name="description">
-                  <p>Specify a description that will show up in the top section of the commands list after the Help command is received.</p>
-                </div>
-                <div class="col-xs-12">
-                  <label for="url">URL</label>
-                  <input id="url" name="url">
-                  <p>This is used to link Discord users to the web server via the Bot.  This can be a URL or the IP of this machine.</p>
-                </div>
-                <div class="col-xs-12">
-                  <label for="logo">Logo (URL)</label>
-                  <input id="logo" name="logo">
-                  <p>External URL to an image file, which will be used as the logo for the Web app and Bot.  Note that you can put an image inside your Web server, and link to that using the URL value above.</p>
-                </div>
+              <div class="panel-body">
+                <form>
+                  <div class="form-group col-xs-12 col-md-6" data-toggle="popover" data-trigger="focus"
+                      data-placement="bottom"
+                      title="Server Name"
+                      data-content="The name which is used in the website heading, and various other places.">
+                    <label for="name" class="col-xs-12 col-sm-6 col-md-4">Name</label>
+                    <div class="col-xs-12 col-sm-6 col-md-8">
+                      <input id="name" name="name" class="form-control" placeholder="229th Flight Log">
+                    </div>
+                  </div>
+                  <div class="form-group col-xs-12 col-md-6" data-toggle="popover" data-trigger="focus"
+                      data-placement="bottom"
+                      title="Name Filter"
+                      data-content="Players that have changed their names may have more than 1 name in their list of names.  Here you can enter a filter, and if your unit has a standardized nametag, it will be matched on this value">
+                    <label for="tag" class="col-xs-12 col-sm-6 col-md-4">Name Filter</label>
+                    <div class="col-xs-12 col-sm-6 col-md-8">
+                      <input id="tag" name="tag" class="short form-control" placeholder="/229) ">
+                    </div>
+                  </div>
+                  <div class="form-group col-xs-12 col-md-6" data-toggle="popover" data-trigger="focus"
+                      data-placement="bottom"
+                      title="Database Name"
+                      data-content="No spaces.  Give a name to your master JSON file that holds all your SLmod servers' data">
+                    <label for="database" class="col-xs-12 col-sm-6 col-md-4">Database Name</label>
+                    <div class="col-xs-12 col-sm-6 col-md-8">
+                      <input id="database" name="database" class="short form-control" placeholder="db">
+                    </div>
+                  </div>
+                  <div class="form-group col-xs-12 col-md-6" data-toggle="popover" data-trigger="focus"
+                      data-placement="bottom"
+                      title="Backup Database Name"
+                      data-content="No spaces.  Give a name to your backup JSON file that holds all your SLmod servers' data">
+                    <label for="backupdatabase" class="col-xs-12 col-sm-6 col-md-4">Backup DB Name</label>
+                    <div class="col-xs-12 col-sm-6 col-md-8">
+                      <input id="backupdatabase" name="backupdatabase" class="short form-control" placeholder="backup_db">
+                    </div>
+                  </div>
+                  <div class="form-group col-xs-12 col-md-6" data-toggle="popover" data-trigger="focus"
+                      data-placement="bottom"
+                      title="JSON Max Size (limit)"
+                      data-content="A whole number followed by 'mb' to specify megabytes.  Needs to be sufficiently larger than the size of each of your SLmod server stats combined.  This size will increase more rapidly when session/mission-level stats are collected.">
+                    <label for="jsonsizelimit" class="col-xs-12 col-sm-6 col-md-4">JSON Max Size</label>
+                    <div class="col-xs-12 col-sm-6 col-md-8">
+                      <input id="jsonsizelimit" name="jsonsizelimit" class="short form-control" placeholder="64mb">
+                    </div>
+                  </div>
+                  <div class="form-group col-xs-12 col-md-6" data-toggle="popover" data-trigger="focus"
+                      data-placement="bottom"
+                      title="Access Port"
+                      data-content="Here you can change the port this app sends and receives data on.">
+                    <label for="port" class="col-xs-12 col-sm-6 col-md-4">Port</label>
+                    <div class="col-xs-12 col-sm-6 col-md-8">
+                      <input type="number" id="port" name="port" class="short form-control" min="10" max="65535" placeholder="4000">
+                    </div>
+                  </div>
+                  <div class="form-group col-xs-12 col-md-6" data-toggle="popover" data-trigger="focus"
+                      data-placement="bottom"
+                      title="'Tree View' of Stats"
+                      data-content="Check this to enable the full-data tree view on the website.  This is process-intensive and can freeze some browsers.">
+                    <label for="treeview" class="col-xs-12 col-sm-6 col-md-4">Enable Treeview</label>
+                    <div class="col-xs-12 col-sm-6 col-md-8">
+                      <input type="checkbox" id="treeview" name="treeview" class="short">
+                    </div>
+                  </div>
+                  <div class="form-group col-xs-12 col-md-6" data-toggle="popover" data-trigger="focus"
+                      data-placement="bottom"
+                      title="Server Description"
+                      data-content="A brief description about your unit/server.  This shows up in google as the site description.">
+                    <label for="description" class="col-xs-12 col-sm-6 col-md-4">Description</label>
+                    <div class="col-xs-12 col-sm-6 col-md-8">
+                      <textarea id="description" name="description" class="form-control" placeholder="Web view for 229th server statistics"></textarea>
+                    </div>
+                  </div>
+                  <div class="form-group col-xs-12 col-md-6" data-toggle="popover" data-trigger="focus"
+                      data-placement="bottom"
+                      title="Site Domain / IP URL"
+                      data-content="This is used to link Discord users to the web server via the Bot.  This can be a domain name pointing to, or the IP address of this machine.">
+                    <label for="url" class="col-xs-12 col-sm-6 col-md-4">URL</label>
+                    <div class="col-xs-12 col-sm-6 col-md-8">
+                      <input id="url" name="url" class="form-control" placeholder="not localhost">
+                    </div>
+                  </div>
+                  <div class="form-group col-xs-12 col-md-6" data-toggle="popover" data-trigger="focus"
+                      data-placement="bottom"
+                      title="Logo"
+                      data-content="External URL to an image file, which will be used as the logo for the Web app and Bot.  Note that you can put an image inside your Web server, and link to that using the URL value above.">
+                    <label for="logo" class="col-xs-12 col-sm-6 col-md-4">Logo (URL)</label>
+                    <div class="col-xs-12 col-sm-6 col-md-8">
+                      <input id="logo" name="logo" class="form-control" placeholder="not localhost/assets/patch.png">
+                    </div>
+                  </div>
+                </form>
               </div>
             </div>
 
@@ -188,54 +260,133 @@
             </div>
 
             <div id="Bot_Config_accordion" class="panel-collapse collapse" role="tabpanel" aria-labelledby="Bot_Config_heading">
-              <div class="panel-body fullwide">
-                <div class="col-xs-6">
-                  <label for="prefix">Command Prefix</label>
-                  <input id="prefix" name="prefix" class="char" maxlength="1">
-                  <p>This is a single-character that will be used in Discord at the beginning of each command.  Common values are '!' or '?'</p>
+              <div class="panel-body">
+                <div class="form-group col-xs-12 col-md-6" data-toggle="popover" data-trigger="focus"
+                    data-placement="bottom"
+                    title="Command Prefix"
+                    data-content="This is a single-character that will be used in Discord at the beginning of each command.  Common values are '!' or '?'">
+                  <label for="prefix" class="col-xs-12 col-sm-6 col-md-4">Command Prefix</label>
+                  <div class="col-xs-12 col-sm-6 col-md-8">
+                    <input id="prefix" name="prefix" class="form-control" maxlength="1" placeholder="!">
+                  </div>
                 </div>
-                <div class="col-xs-6">
-                  <label for="defaultchannel">Default Channel</label>
-                  <input id="defaultchannel" name="defaultchannel" class="short">
-                  <p>When the database is updated, SLbot can broadcast the update to all connected Discords.  But which channel should it do that in?  Specify the channel name, minus the '#'</p>
+                <div class="form-group col-xs-12 col-md-6" data-toggle="popover" data-trigger="focus"
+                    data-placement="bottom"
+                    title="Default Discord Channel"
+                    data-content="When the database is updated, SLbot can broadcast the update to all connected Discords.  But which channel should it do that in?  Specify the channel name, minus the '#'">
+                  <label for="defaultchannel" class="col-xs-12 col-sm-6 col-md-4">Default Channel</label>
+                  <div class="col-xs-12 col-sm-6 col-md-8">
+                    <input id="defaultchannel" name="defaultchannel" class="form-control" placeholder="slbot">
+                  </div>
                 </div>
-                <div class="col-xs-6">
-                  <label for="defaultonly">Def. Chan. Only</label>
-                  <input id="defaultonly" type="checkbox" name="defaultonly">
-                  <p>Should SLbot ever respond in channels which are NOT the channel specified above?</p>
+                <div class="form-group col-xs-12 col-md-6" data-toggle="popover" data-trigger="focus"
+                    data-placement="bottom"
+                    title="Default Discord Channel Only"
+                    data-content="Should SLbot ever respond in channels which are NOT the channel specified above?">
+                  <label for="defaultonly" class="col-xs-12 col-sm-6 col-md-4">Def. Chan. Only</label>
+                  <div class="col-xs-12 col-sm-6 col-md-8">
+                    <input id="defaultonly" type="checkbox" name="defaultonly">
+                  </div>
                 </div>
-                <div class="col-xs-6">
-                  <label for="sendupdatemessages">Send Update Messages</label>
-                  <input id="sendupdatemessages" type="checkbox" name="sendupdatemessages">
-                  <p>Should SLbot broadcast to discord(s) whenever its database has been updated?</p>
+                <div class="form-group col-xs-12 col-md-6" data-toggle="popover" data-trigger="focus"
+                    data-placement="bottom"
+                    title="Send Update Messages"
+                    data-content="Should SLbot broadcast to discord(s) whenever its database has been updated?">
+                  <label for="sendupdatemessages" class="col-xs-12 col-sm-6 col-md-4">Send Update Messages</label>
+                  <div class="col-xs-12 col-sm-6 col-md-8">
+                    <input id="sendupdatemessages" type="checkbox" name="sendupdatemessages">
+                  </div>
                 </div>
-                <div class="col-xs-6">
-                  <label for="serverhealthindicator">Server Health Indicator</label>
-                  <input id="serverhealthindicator" type="checkbox" name="serverhealthindicator" class="char">
-                  <p>When enabled, the bot will appear Online/green in Discord for the first 12 hours.  If it does not receive an update, it will become Idle/yellow, and if it still receives no database update after 24 hours, it's state will be come 'do not distrub'/red.</p>
+                <div class="form-group col-xs-12 col-md-6" data-toggle="popover" data-trigger="focus"
+                    data-placement="bottom"
+                    title="Server Health Indicator"
+                    data-content="When enabled, the bot will appear Online/green in Discord for the first 12 hours.  If it does not receive an update, it will become Idle/yellow, and if it still receives no database update after 24 hours, it's state will be come Do Not Distrub'/red.">
+                  <label for="serverhealthindicator" class="col-xs-12 col-sm-6 col-md-4">Server Health Indicator</label>
+                  <div class="col-xs-12 col-sm-6 col-md-8">
+                  <input id="serverhealthindicator" type="checkbox" name="serverhealthindicator">
                 </div>
-                <div class="col-xs-6">
-                  <label for="color">Message Color</label>
-                  <input id="color" name="color" class="short" maxlength="7" minlength="4">
-                  <p>Hexadecimal color value, the color of SLbot message embed vertical bar in Discord messages</p>
                 </div>
-                <div class="col-xs-6">
-                  <label for="helpcolor">Help Message Color</label>
-                  <input id="helpcolor" name="helpcolor" class="short" maxlength="7" minlength="4">
-                  <p>Same as above, only for Help & Error messages.</p>
+                <div class="form-group col-xs-12 col-md-6" data-toggle="popover" data-trigger="focus"
+                    data-placement="bottom"
+                    title="Message Color"
+                    data-content="Hexadecimal color value, the color of SLbot message embed vertical bar in Discord messages">
+                  <label for="color" class="col-xs-12 col-sm-6 col-md-4">Message Color</label>
+                  <div class="col-xs-12 col-sm-6 col-md-8">
+                    <input type="color" id="color" name="color" maxlength="7" minlength="4" class="form-control" placeholder="CF0000">
+                  </div>
                 </div>
-                <div class="col-xs-12">
-                  <label for="helpdescription">Help Description</label>
-                  <input id="helpdescription" name="helpdescription">
-                  <p>This appears at the top of the Help command response.</p>
+                <div class="form-group col-xs-12 col-md-6" data-toggle="popover" data-trigger="focus"
+                    data-placement="bottom"
+                    title="Help Message Color"
+                    data-content="Same as above, only for Help & Error messages.">
+                  <label for="helpcolor" class="col-xs-12 col-sm-6 col-md-4">Help Message Color</label>
+                  <div class="col-xs-12 col-sm-6 col-md-8">
+                    <input type="color" id="helpcolor" name="helpcolor" maxlength="7" minlength="4" class="form-control" placeholder="CF0000">
+                  </div>
                 </div>
-                <div class="col-xs-6">
-                  <label for="asimovfactor">Easter Egg Scarcity</label>
-                  <input id="asimovfactor" type="number" name="asimovfactor" class="short" min="0" max="999999999999">
-                  <p>The higher the value, the more scarce the easter egg will become.  Set it to 0 and it will happen every time the discord bot server starts.</p>
+
+                <div class="form-group col-xs-12 col-md-6" data-toggle="popover" data-trigger="focus"
+                    data-placement="bottom"
+                    title="Help Description"
+                    data-content="This appears at the top of the Help command response.">
+                  <label for="helpdescription" class="col-xs-12 col-sm-6 col-md-4">Help Description</label>
+                  <div class="col-xs-12 col-sm-6 col-md-8">
+                    <textarea id="helpdescription" name="helpdescription" class="form-control" placeholder="This is a discord bot that lets you query the DCS World SLmod game statistics which are being tracked by this instance of SLbot. You can issue it commands, and it can also notify you when a DCS server sends an update."></textarea>
+                  </div>
+                </div>
+                <div class="form-group col-xs-12 col-md-6" data-toggle="popover" data-trigger="focus"
+                    data-placement="bottom"
+                    title="Easter Egg Scarcity"
+                    data-content="The higher the value, the more scarce the easter egg will become.  Set it to 0 and it will happen every time the discord bot server starts.">
+                  <label for="asimovfactor" class="col-xs-12 col-sm-6 col-md-4">Easter Egg Scarcity</label>
+                  <div class="col-xs-12 col-sm-6 col-md-8">
+                    <input id="asimovfactor" type="number" name="asimovfactor" min="0" max="999999999999" class="form-control" placeholder="42">
+                  </div>
                 </div>
               </div>
             </div>
+          </div>
+
+
+
+          <div class="panel panel-default">
+
+            <div class="panel-heading" data-toggle="collapse" data-target="#DCS_accordion" aria-controls="DCS_accordion" role="tab" id="DCS_heading">
+              <h4 class="panel-title">DCS Server Stats Config <small>(requires SLmod)</small></h4>
+            </div>
+
+            <div id="DCS_accordion" class="panel-collapse collapse" role="tabpanel" aria-labelledby="DCS_heading">
+              <div class="panel-body">
+                <input id="dcs_id" name="dcs_id" class="form-control" placeholder="caucasus">
+                <input id="dcs_name" name="dcs_name" class="form-control" placeholder="229th AHB Caucasus">
+                <input id="dcs_token" name="dcs_token" class="form-control" placeholder="s00p3r-s33kr3t-k3y">
+                <input id="dcs_serverURL" name="dcs_serverURL" class="form-control" placeholder="http://localhost:4000">
+                <input id="dcs_postPath" name="dcs_postPath" class="form-control" placeholder="/api/dcs/slmod/update">
+                <input id="dcs_statsPath" name="dcs_statsPath" class="form-control" placeholder="C:\Users\myself\Saved Games\DCS.openbeta\Slmod\SlmodStats.lua">
+                <input id="dcs_updateSchedule" name="dcs_updateSchedule" class="form-control" placeholder = "0,20,40 * * * *">
+                <!-- TODO break updateschedule into simple UI dropdowns -->
+              </div>
+            </div>
+
+          </div>
+
+
+
+          <div class="panel panel-default">
+
+            <div class="panel-heading" data-toggle="collapse" data-target="#Whitelist_accordion" aria-controls="Whitelist_accordion" role="tab" id="Whitelist_heading">
+              <h4 class="panel-title">DCS Server Network Whitelist</h4>
+            </div>
+
+            <div id="Whitelist_accordion" class="panel-collapse collapse" role="tabpanel" aria-labelledby="Whitelist_heading">
+              <div class="panel-body">
+                /*
+                  list UI, 2 inputs > ID:Token
+                */
+                <div id="Whitelist">Under Construction</div>
+              </div>
+            </div>
+
           </div>
 
 
@@ -248,7 +399,10 @@
     <script>
       require('../js/render.js');
       window.$ = window.jQuery = require('jquery');
-      console.log(process);
+      $(function () {
+        $('[data-toggle="popover"]').popover()
+      })
+      //console.log(process);
     </script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
   </body>

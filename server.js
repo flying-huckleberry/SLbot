@@ -16,6 +16,8 @@ const BodyParser = require('body-parser')
 const {ipcRenderer, BrowserWindow} = require('electron')
 const Web = Express()
 const helmet = require('helmet')
+const https = require('https')
+const cors = require('cors')
 var Server = false
 //----------------------------------
 const API = require('./api/db_api.js')
@@ -23,6 +25,10 @@ var Config = require('./config.json')
 const Logger = require('./logger.js')
 let mainWindow
 //----------------------------------
+const options = {
+  // key: fs.readFileSync("./0000_key-certbot.pem"),
+  // cert: fs.readFileSync("/srv/www/keys/chain.pem")
+};
 Web.use(helmet())
 Web.use(helmet.referrerPolicy({ policy: 'same-origin' }))
 Web.use(BodyParser.urlencoded({ extended: true }))
@@ -32,6 +38,7 @@ Web.use('/css', Express.static('./views/css'))
 Web.use('/json_viewer', Express.static('./node_modules/jquery.json-viewer/json-viewer/'))
 Web.use('/assets', Express.static('./views/assets'))
 Web.set('view engine', 'ejs')
+Web.use(cors());
 //----------------------------------
 //vars for easy logging
 const e = 'error'
@@ -53,6 +60,7 @@ Web.get('/', (request, response) => {
   Logger.log(str, i)
   response.render('html/index', {
       title: Config.web.name,
+      description: Config.web.description,
       name: Config.web.name,
       logo: Config.web.logo,
       treeView: Config.web.treeview
@@ -93,42 +101,48 @@ Web.get('/about', (request, response) => {
 // API calls
 //---------------------
 
-//API for web call
+//API for stats query
 Web.post('/api/fetch', (request, response) => {
   let str = 'POST /api/fetch'
   Logger.log(str, i)
-  response.json(API.getFullStats()) //send them the data they need
+  response.json(API.getFullStats()) //send them the stats they need
+})
+//API for whitelist query
+Web.post('/api/whitelist', (request, response) => {
+  let str = 'POST /api/whitelist'
+  Logger.log(str, i)
+  response.json(API.getWhitelist()) //send them the whitelist they need)
 })
 //API for servers query
 Web.post('/api/servers', (request, response) => {
   let str = 'POST /api/servers'
   Logger.log(str, i)
-  response.json(API.getServers()) //send them the data they need
+  response.json(API.getServers()) //send them the serverlist they need
 })
 //API for hours query
 Web.post('/api/hours', (request, response) => {
   let str = 'POST /api/hours "'+request.body.command+'"'
   ipcRenderer.send('log', 'GET  /index')
   Logger.log(str, i)
-  response.json(API.getHours(sanitizeCmd(request.body.command))) //send them the data they need
+  response.json(API.getHours(sanitizeCmd(request.body.command))) //send them the results they need
 })
 //API for kills query
 Web.post('/api/kills', (request, response) => {
   let str = 'POST /api/kills "'+request.body.command+'"'
   Logger.log(str, i)
-  response.json(API.getKills(sanitizeCmd(request.body.command))) //send them the data they need
+  response.json(API.getKills(sanitizeCmd(request.body.command))) //send them the results they need
 })
 //API for deaths query
 Web.post('/api/deaths', (request, response) => {
   let str = 'POST /api/deaths "'+request.body.command+'"'
   Logger.log(str, i)
-  response.json(API.getDeaths(sanitizeCmd(request.body.command))) //send them the data they need
+  response.json(API.getDeaths(sanitizeCmd(request.body.command))) //send them the results they need
 })
 //API for types list
 Web.post('/api/types', (request, response) => {
   let str = 'POST /api/types'
   Logger.log(str, i)
-  response.json(API.getTypes()) //send them the data they need
+  response.json(API.getTypes()) //send them the object types they need
 })
 //API for SLSC Servers
 //update the database with new info
@@ -169,12 +183,12 @@ function sanitizeCmd(input) {
 function checkSize() {
   let size = API.getDBSize()
   let limit = parseFloat(Config.web.jsonsizelimit.replace('mb',''))
-  Logger.log(
-    (limit-3 < size)
-      ? 'Warning: Database is '+parseFloat(limit-size)+' mb away from exceeding the '
-      +Config.web.jsonsizelimit+' threshold.  Consider increasing the "JSON Max Size" value in Web Server Config and restarting the Web Server.'
-      : 'Warning: Delete me, JSON is within limits.'
-    , e);
+  if (limit-3 < size) {
+    Logger.log('Warning: Database is '+parseFloat(limit-size)+' mb away from exceeding the '+Config.web.jsonsizelimit
+      +' threshold.  Consider increasing the "JSON Max Size" value in Web Server Config and restarting the Web Server.'
+      , e);
+  }
+
 }
 
 /*
@@ -184,7 +198,8 @@ _________________________________________________________________*/
 function turnOn() {
   //serve app
   Logger.log('Web Server starting...', i)
-  Server = Web.listen(Config.web.port || 4000)
+  //Server = https.createServer(options, Web)
+  Web.listen(Config.web.port || 4000)
   if (Server && Server.listening) { Logger.log('Web server AWAKE on port ' + Config.web.port, i) }
 }
 

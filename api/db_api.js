@@ -119,7 +119,7 @@ function poop() {
   sv.push('/',thing);
 
 }
-poop();
+//poop();
 
 /*
   updateAircraft
@@ -594,7 +594,6 @@ function singleDeaths(CMD, server = false) {
   updates the databases with new stats
 _________________________________________________________________*/
 function update(json) {
-  console.log(json)
   var serverId = authorizeToken(json['id'], json['token']);
   if (serverId === false) { return 'Invalid Token, Aborting DB Update' }
   else { LOGGER.log('Token is valid for ID: ' + serverId, i) }
@@ -770,7 +769,7 @@ function getWhitelist() {
   try { var whitelist = fdb.getData('/whitelist') }
   catch(err) {
     LOGGER.log('ERROR: Trying to get whitelist, but no data is available.',e);
-    return 'ERROR: NO Database '+DB+'/whitelist'; //return the error
+    return false;
   }
   return whitelist;
 }
@@ -793,6 +792,7 @@ module.exports = {
   getDeaths: function(input) { return getDeaths(input) },
   getTypes: function() { return getTypes() },
   getDBSize: function() { return getDBSize() },
+  getWhitelist: function() { return getWhitelist() },
   clearCache: function() { return clearCache() },
   updateAircraft: function() { return updateAircraft() }
 };

@@ -11,6 +11,7 @@ ______________________________________________________*/
 
 const path = require('path')
 const {app, BrowserWindow, ipcMain} = require('electron')
+console.log(app);
 //----------------------------------
 //const Bot = require('./bot.js')
 //const Server = require('./server.js')
@@ -72,7 +73,10 @@ function createWindow () {
     height: 600,
     icon: path.join(__dirname, 'views/assets/icons/png/64x64.png'),
     backgroundColor: '#2E2C29',
-    show: false
+    show: false,
+	webPreferences: {
+		nodeIntegration: true
+	}
   })
 
   mainWindow.on('ready-to-show', () => {

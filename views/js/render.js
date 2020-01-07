@@ -34,38 +34,38 @@ function scrollLog() {
 
 $('#web-switch').on('click', function(e) {
   updateWebConfig()
+  $('#Log_accordion').collapse('show');
   !document.getElementById("web-switch").checked? Web.turnOff() : Web.turnOn()
 })
 
 $('#bot-switch').on('click', function(e) {
-  //updateBotConfig()
+  updateBotConfig()
+  $('#Log_accordion').collapse('show');
   !document.getElementById("bot-switch").checked? Bot.turnOff() : Bot.turnOn()
 })
 
 $('#cron-switch').on('click', function(e) {
   //updateCronConfig()
+  $('#Log_accordion').collapse('show');
   console.log('cron switch')
   //!document.getElementById("cron-switch").checked? Cron.turnOff() : Cron.turnOn()
 
   !document.getElementById("cron-switch").checked? hideSendBtn() : showSendBtn()
 })
 
-$('#clear-cache').on('click', function(e) {
-  console.log('cache clear')
-  Web.clearCache()
-})
-
 $('#send-now').on('click', function() {
-  console.log('click')
+  console.log('send now')
 })
 
 $('#update-aircraft').on('click', function() {
-  console.log('update')
   Web.updateAircraft()
 })
 
+$('#clear-cache').on('click', function(e) {
+  Web.clearCache()
+})
+
 function showSendBtn() {
-  console.log("show")
   document.getElementById("send-stats").style.display ="block"
 }
 
@@ -87,17 +87,17 @@ function updateWebConfig() {
     "treeview": document.getElementById("treeview").value,
     "port": document.getElementById("port").value
   }
-  var fs = require('fs')
-  var config = '../../config.json'
-  var file = require(config)
-  file.web = web
-  fs.writeFile(config, JSON.stringify(file), function (err) {
-    if (err) return ipcRenderer.send('log', err)
-    ipcRenderer.send('log', 'Web config saved')
-    Web.refreshConfig()
-    file = require('../../config.json')
-    console.log(file.web.name)
-  })
+  // var fs = require('fs')
+  // var config = './../../config.json'
+  // var file = require(config)
+  // file.web = web
+  // fs.writeFile(config, JSON.stringify(file), function (err) {
+  //   if (err) return ipcRenderer.send('log', err)
+  //   ipcRenderer.send('log', 'Web config saved')
+  //   Web.refreshConfig()
+  //   file = require('../../config.json')
+  //   console.log(file.web.name)
+  // })
 
 }
 
@@ -134,4 +134,4 @@ function bakeConfig() {
   document.getElementById('treeview').checked = config.web.treeview
   document.getElementById('port').value = config.web.port
 }
-bakeConfig()
+//bakeConfig()

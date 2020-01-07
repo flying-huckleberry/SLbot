@@ -1,2 +1,2 @@
-node index.js -v
+electron index.js -v
 pause
